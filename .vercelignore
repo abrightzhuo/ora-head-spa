@@ -1,0 +1,12 @@
+node_modules
+dist
+.vercel
+.vercel-cli
+.vercel-home
+.chrome-*
+android
+assets
+ios
+releases
+*.zip
+.DS_Store

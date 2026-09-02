@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">ORA Head Spa</string>
+    <string name="title_activity_main">ORA Head Spa</string>
+    <string name="package_name">com.myoraspa.app</string>
+    <string name="custom_url_scheme">com.myoraspa.app</string>
+</resources>
