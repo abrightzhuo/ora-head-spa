@@ -18,6 +18,7 @@ type AppointmentRecord = {
   service: string
   provider_name: string | null
   starts_at: string | null
+  cancellation_deadline: string | null
   status: string
   payment: {
     status: string
@@ -78,6 +79,7 @@ export default function CustomerAccount() {
   )
   const [records, setRecords] = useState<CustomerRecords | null>(null)
   const [loading, setLoading] = useState(false)
+  const [cancellingId, setCancellingId] = useState<string | null>(null)
   const [error, setError] = useState('')
 
   useEffect(() => {
@@ -126,30 +128,84 @@ export default function CustomerAccount() {
       : card.active
         ? t.active
         : t.inactive
-    const membershipLabels =
-      locale === 'zh' || locale === 'zh-TW'
-        ? {
-            tab: '年度会员',
-            active: '有效会员',
-            expired: '已过期',
-            validThrough: '有效期至',
-            complimentary: '赠送项目',
-            available: '尚未使用',
-            redeemed: '已核销',
-            none: '暂无会员卡',
-            join: '加入 Annual Membership',
-          }
-        : {
-            tab: 'Membership',
-            active: 'Active membership',
-            expired: 'Expired',
-            validThrough: 'Valid through',
-            complimentary: 'Complimentary experience',
-            available: 'Available',
-            redeemed: 'Redeemed',
-            none: 'No membership yet',
-            join: 'Join Annual Membership',
-          }
+  const membershipLabels =
+    locale === 'zh' || locale === 'zh-TW'
+      ? {
+          tab: '年度会员',
+          active: '有效会员',
+          expired: '已过期',
+          validThrough: '有效期至',
+          complimentary: '赠送项目',
+          available: '尚未使用',
+          redeemed: '已核销',
+          none: '暂无会员卡',
+          join: '加入 Annual Membership',
+        }
+      : {
+          tab: 'Membership',
+          active: 'Active membership',
+          expired: 'Expired',
+          validThrough: 'Valid through',
+          complimentary: 'Complimentary experience',
+          available: 'Available',
+          redeemed: 'Redeemed',
+          none: 'No membership yet',
+          join: 'Join Annual Membership',
+        }
+
+  const appointmentActions =
+    locale === 'zh' || locale === 'zh-TW'
+      ? {
+          cancel: '取消预约',
+          confirm:
+            '确定取消这次预约吗？系统将根据预约时间自动判断是否属于 24 小时内取消。',
+          failed: '无法取消预约，请联系门店。',
+        }
+      : {
+          cancel: 'Cancel appointment',
+          confirm:
+            'Cancel this appointment? The applicable cancellation window will be recorded automatically.',
+          failed: 'Unable to cancel this appointment. Please contact ORA.',
+        }
+
+  const cancelAppointment = async (appointment: AppointmentRecord) => {
+    if (!session || !window.confirm(appointmentActions.confirm)) return
+    setCancellingId(appointment.id)
+    setError('')
+    try {
+      const response = await fetch('/api/bookings', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          action: 'cancel_appointment',
+          appointmentId: appointment.id,
+        }),
+      })
+      const result = await response.json()
+      if (!response.ok || !result.appointment) {
+        throw new Error(result.error ?? 'cancel_failed')
+      }
+      setRecords((current) =>
+        current
+          ? {
+              ...current,
+              appointments: current.appointments.map((item) =>
+                item.id === appointment.id
+                  ? { ...item, status: result.appointment.status }
+                  : item,
+              ),
+            }
+          : current,
+      )
+    } catch {
+      setError(appointmentActions.failed)
+    } finally {
+      setCancellingId(null)
+    }
+  }
 
   return (
     <main className="customer-account-page">
@@ -246,6 +302,19 @@ export default function CustomerAccount() {
                           </div>
                         )}
                       </dl>
+                      {appointment.status === 'pending' &&
+                        appointment.starts_at &&
+                        new Date(appointment.starts_at).getTime() > Date.now() && (
+                          <div className="customer-record__actions">
+                            <button
+                              type="button"
+                              disabled={cancellingId === appointment.id}
+                              onClick={() => void cancelAppointment(appointment)}
+                            >
+                              {appointmentActions.cancel}
+                            </button>
+                          </div>
+                        )}
                     </article>
                   ))
                 ) : (

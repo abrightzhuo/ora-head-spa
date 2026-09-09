@@ -92,6 +92,25 @@ export type AppointmentStatusHistory = {
   changed_at: string
 }
 
+export type AppointmentChangeHistory = {
+  id: number
+  appointment_id: string
+  action: 'appointment_updated'
+  changes: Record<
+    string,
+    {
+      from?: string | null
+      to?: string | null
+      from_start?: string | null
+      from_end?: string | null
+      to_start?: string | null
+      to_end?: string | null
+    }
+  >
+  acted_by: string | null
+  acted_at: string
+}
+
 export type OperatorAccountHistory = {
   id: number
   operator_id: string

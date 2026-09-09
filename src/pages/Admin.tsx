@@ -35,6 +35,7 @@ import {
   isSupabaseConfigured,
   supabase,
   type Appointment,
+  type AppointmentChangeHistory,
   type AppointmentCharge,
   type AppointmentStatusHistory,
   type Checkout,
@@ -424,6 +425,9 @@ export default function Admin() {
   const [checkoutItems, setCheckoutItems] = useState<CheckoutItem[]>([])
   const [services, setServices] = useState<Service[]>([])
   const [statusHistory, setStatusHistory] = useState<AppointmentStatusHistory[]>([])
+  const [appointmentChangeHistory, setAppointmentChangeHistory] = useState<
+    AppointmentChangeHistory[]
+  >([])
   const [operatorHistory, setOperatorHistory] = useState<OperatorAccountHistory[]>([])
   const [staffProfiles, setStaffProfiles] = useState<StaffProfile[]>([])
   const [currentProfile, setCurrentProfile] = useState<StaffProfile | null>(null)
@@ -536,6 +540,7 @@ export default function Admin() {
         servicesResult,
         profilesResult,
         historyResult,
+        changeHistoryResult,
         operatorHistoryResult,
       ] = await Promise.all([
         supabase
@@ -577,6 +582,10 @@ export default function Admin() {
           .from('appointment_status_history')
           .select('*')
           .order('changed_at', { ascending: false }),
+        supabase
+          .from('appointment_change_history')
+          .select('*')
+          .order('acted_at', { ascending: false }),
         canReadAccountHistory
           ? supabase
               .from('operator_account_history')
@@ -595,6 +604,7 @@ export default function Admin() {
         servicesResult.error ||
         profilesResult.error ||
         historyResult.error ||
+        changeHistoryResult.error ||
         operatorHistoryResult.error
       ) {
         setDataError(true)
@@ -614,6 +624,9 @@ export default function Admin() {
         setServices((servicesResult.data ?? []) as Service[])
         setStatusHistory(
           (historyResult.data ?? []) as AppointmentStatusHistory[],
+        )
+        setAppointmentChangeHistory(
+          (changeHistoryResult.data ?? []) as AppointmentChangeHistory[],
         )
         setOperatorHistory(
           (operatorHistoryResult.data ?? []) as OperatorAccountHistory[],
@@ -1412,12 +1425,17 @@ export default function Admin() {
         <>
           <AppointmentCalendar
             appointments={appointments}
+            customers={customers}
+            services={services}
             staff={staffProfiles}
+            session={session}
             locale={locale}
             currentProfile={currentProfile}
+            changeHistory={appointmentChangeHistory}
             onStatusChange={(appointment, status) =>
               void updateStatus(appointment, status)
             }
+            onAppointmentSaved={() => void loadAppointments()}
             charges={appointmentCharges}
             onChargeFee={(appointment, chargeType) =>
               void chargeAppointmentFee(appointment, chargeType)

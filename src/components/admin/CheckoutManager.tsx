@@ -14,6 +14,7 @@ import type {
   CheckoutItem,
   Payment,
   Product,
+  Service,
   StaffProfile,
 } from '../../lib/supabase'
 import { formatEasternDateTime } from '../../lib/dateTime'
@@ -43,10 +44,17 @@ type CheckoutResponse = {
     amount_cents: number
   }[]
   products: Product[]
+  services: Service[]
   taxRateBps: number
   appointmentPayment: {
     amount_cents: number
     status: 'pending' | 'completed' | 'failed' | 'refunded'
+  } | null
+  savedPaymentMethod: {
+    id: string
+    card_brand: string | null
+    card_last_four: string | null
+    status: 'active' | 'disabled'
   } | null
   membershipBenefit: {
     membershipId: string
@@ -58,6 +66,8 @@ type CheckoutResponse = {
     complimentaryAvailable: boolean
   } | null
 }
+
+type PaymentChoice = Payment['method'] | 'card_on_file'
 
 type SquareConfig = {
   enabled: boolean
@@ -113,7 +123,7 @@ export function CheckoutManager({
   const [tipMode, setTipMode] = useState<'15' | '20' | '25' | 'custom' | 'none'>('20')
   const [customTip, setCustomTip] = useState('0')
   const [paymentMethod, setPaymentMethod] =
-    useState<Payment['method']>('external_card')
+    useState<PaymentChoice>('external_card')
   const [giftCardCode, setGiftCardCode] = useState('')
   const [squareConfig, setSquareConfig] = useState<SquareConfig | null>(null)
   const [loading, setLoading] = useState(false)
@@ -132,6 +142,7 @@ export function CheckoutManager({
           quantity: '数量',
           price: '单价',
           addProduct: '添加产品',
+          addService: '添加服务',
           addOn: '添加 Add-on',
           discount: '折扣',
             membershipDiscount: '会员优惠',
@@ -147,6 +158,7 @@ export function CheckoutManager({
             prepaid: '预约已预付',
             balanceDue: '剩余应付',
           payment: '付款方式',
+          savedCard: '预约时保存的卡',
           square: 'Square Card',
           cash: '现金',
           external: '外部刷卡',
@@ -159,6 +171,7 @@ export function CheckoutManager({
           save: '保存 Checkout',
           pay: '完成付款',
           paid: '付款完成，预约已结账。',
+          receipt: '查看付款收据',
           failed: '操作失败，请重试。',
           squareUnavailable: 'Square 尚未配置，当前可使用门店线下付款。',
           remove: '删除',
@@ -174,6 +187,7 @@ export function CheckoutManager({
           quantity: 'Qty',
           price: 'Unit price',
           addProduct: 'Add product',
+          addService: 'Add service',
           addOn: 'Add add-on',
           discount: 'Discount',
             membershipDiscount: 'Membership savings',
@@ -189,6 +203,7 @@ export function CheckoutManager({
             prepaid: 'Booking prepayment',
             balanceDue: 'Balance due',
           payment: 'Payment method',
+          savedCard: 'Saved card on file',
           square: 'Square Card',
           cash: 'Cash',
           external: 'External Card',
@@ -201,6 +216,7 @@ export function CheckoutManager({
           save: 'Save Checkout',
           pay: 'Complete Payment',
           paid: 'Payment completed and appointment checked out.',
+          receipt: 'View payment receipt',
           failed: 'Unable to complete this action.',
           squareUnavailable: 'Square is not configured. Manual store payments remain available.',
           remove: 'Remove',
@@ -305,6 +321,9 @@ export function CheckoutManager({
       .filter((payment) => payment.status === 'completed')
       .reduce((sum, payment) => sum + payment.amount_cents, 0) ?? 0
   const amountDueCents = Math.max(0, estimatedTotal - paidCents)
+  const receiptUrl = [...(data?.payments ?? [])]
+    .reverse()
+    .find((payment) => payment.receipt_url)?.receipt_url
 
   useEffect(() => {
     void fetch('/api/square-config')
@@ -359,6 +378,9 @@ export function CheckoutManager({
         ).toFixed(2),
     )
     setCustomTip(((result.checkout?.tip_cents ?? 0) / 100).toFixed(2))
+    setPaymentMethod(
+      result.savedPaymentMethod ? 'card_on_file' : 'external_card',
+    )
   }
 
   const openCheckout = async () => {
@@ -521,6 +543,27 @@ export function CheckoutManager({
     ])
   }
 
+  const addService = (selectedServiceId: string) => {
+    const service = data?.services.find(
+      (item) => item.id === selectedServiceId,
+    )
+    if (!service || service.price_cents === null) return
+    setItems((current) => [
+      ...current,
+      {
+        item_type: 'service',
+        service_id: service.id,
+        product_id: null,
+        provider_id: data?.appointment.provider_id ?? null,
+        description: service.name,
+        quantity: 1,
+        unit_price_cents: service.price_cents,
+        taxable: service.taxable,
+        commissionable: service.commissionable,
+      },
+    ])
+  }
+
   return (
     <section className="admin-panel checkout-manager">
       <header>
@@ -568,6 +611,17 @@ export function CheckoutManager({
       </div>
 
       {message && <p className="checkout-message">{message}</p>}
+      {receiptUrl && (
+        <a
+          className="checkout-receipt-link"
+          href={receiptUrl}
+          target="_blank"
+          rel="noreferrer"
+        >
+          <ReceiptText size={15} />
+          {t.receipt}
+        </a>
+      )}
 
       {data?.checkout && (
         <div className="checkout-workspace">
@@ -654,6 +708,22 @@ export function CheckoutManager({
             ))}
 
             <div className="checkout-add">
+              <select
+                defaultValue=""
+                onChange={(event) => {
+                  addService(event.target.value)
+                  event.target.value = ''
+                }}
+              >
+                <option value="">{t.addService}</option>
+                {data.services
+                  .filter((service) => service.price_cents !== null)
+                  .map((service) => (
+                    <option key={service.id} value={service.id}>
+                      {service.name} · {money(service.price_cents ?? 0)}
+                    </option>
+                  ))}
+              </select>
               <select
                 defaultValue=""
                 onChange={(event) => {
@@ -808,10 +878,17 @@ export function CheckoutManager({
                       value={paymentMethod}
                       onChange={(event) =>
                         setPaymentMethod(
-                          event.target.value as Payment['method'],
+                          event.target.value as PaymentChoice,
                         )
                     }
                     >
+                      {data.savedPaymentMethod && (
+                        <option value="card_on_file">
+                          {t.savedCard} ·{' '}
+                          {data.savedPaymentMethod.card_brand ?? 'Card'} ••••{' '}
+                          {data.savedPaymentMethod.card_last_four}
+                        </option>
+                      )}
                       <option
                         value="square_card"
                         disabled={!squareConfig?.enabled}

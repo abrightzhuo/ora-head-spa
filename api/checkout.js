@@ -10,6 +10,7 @@ import {
 
 const appointmentRoles = ['owner', 'manager', 'front_desk', 'staff']
 const paymentMethods = [
+  'card_on_file',
   'square_card',
   'cash',
   'external_card',
@@ -175,7 +176,7 @@ async function loadCheckout(adminClient, appointmentId) {
   const { data: appointment, error: appointmentError } = await adminClient
     .from('appointments')
     .select(
-      'id, customer_id, customer_name, customer_email, phone, service, service_id, provider_id, starts_at, ends_at, status',
+      'id, customer_id, customer_name, customer_email, phone, service, service_id, provider_id, starts_at, ends_at, status, payment_method_id',
     )
     .eq('id', appointmentId)
     .single()
@@ -199,6 +200,7 @@ async function loadCheckout(adminClient, appointmentId) {
       membershipResult,
       settingsResult,
       appointmentPaymentResult,
+      savedPaymentMethodResult,
     ] =
     await Promise.all([
       checkout
@@ -228,7 +230,9 @@ async function loadCheckout(adminClient, appointmentId) {
         .order('name'),
         adminClient
           .from('services')
-          .select('id, code')
+          .select(
+            'id, code, name, price_cents, taxable, commissionable, active',
+          )
           .eq('active', true),
         appointment.customer_id
           ? adminClient
@@ -250,6 +254,16 @@ async function loadCheckout(adminClient, appointmentId) {
         .select('*')
         .eq('appointment_id', appointmentId)
         .maybeSingle(),
+      appointment.payment_method_id
+        ? adminClient
+            .from('customer_payment_methods')
+            .select(
+              'id, square_customer_id, square_card_id, card_brand, card_last_four, status, environment',
+            )
+            .eq('id', appointment.payment_method_id)
+            .eq('status', 'active')
+            .maybeSingle()
+        : Promise.resolve({ data: null, error: null }),
     ])
 
   const membership = membershipResult.data ?? null
@@ -261,6 +275,7 @@ async function loadCheckout(adminClient, appointmentId) {
     payments: paymentsResult.data ?? [],
     tips: tipsResult.data ?? [],
     products: productsResult.data ?? [],
+    services: servicesResult.data ?? [],
     membership,
     membershipBenefit: membershipBenefit(
       appointment,
@@ -269,6 +284,7 @@ async function loadCheckout(adminClient, appointmentId) {
     ),
     taxRateBps: settingsResult.data?.tax_rate_bps ?? 0,
     appointmentPayment: appointmentPaymentResult.data ?? null,
+    savedPaymentMethod: savedPaymentMethodResult.data ?? null,
   }
 }
 
@@ -286,6 +302,7 @@ async function processSquarePayment({
   idempotencyKey,
   checkoutId,
   customerName,
+  customerId,
 }) {
   const accessToken = process.env.SQUARE_ACCESS_TOKEN
   const locationId =
@@ -324,6 +341,7 @@ async function processSquarePayment({
           : undefined,
       reference_id: checkoutId,
       note: `ORA checkout for ${customerName}`,
+      customer_id: customerId || undefined,
       autocomplete: true,
     }),
   })
@@ -594,7 +612,7 @@ export default async function handler(request, response) {
     }
     if (
       amountDueCents > 0 &&
-      method !== 'square_card' &&
+      !['square_card', 'card_on_file'].includes(method) &&
       !manualPaymentRoles.includes(profile.role)
     ) {
       return json(response, 403, { error: 'manual_payment_forbidden' })
@@ -629,8 +647,10 @@ export default async function handler(request, response) {
       const paymentId = randomUUID()
       const idempotencyKey = randomUUID()
       let paymentData = {
-        method,
-        provider: method === 'square_card' ? 'square' : 'manual',
+        method: method === 'card_on_file' ? 'square_card' : method,
+        provider: ['square_card', 'card_on_file'].includes(method)
+          ? 'square'
+          : 'manual',
         provider_payment_id: null,
         status: 'completed',
         card_brand: null,
@@ -639,14 +659,26 @@ export default async function handler(request, response) {
         failure_message: null,
       }
 
-      if (method === 'square_card') {
+      if (method === 'card_on_file' && !loaded.savedPaymentMethod) {
+        return json(response, 409, { error: 'saved_card_unavailable' })
+      }
+
+      if (['square_card', 'card_on_file'].includes(method)) {
+        const sourceId =
+          method === 'card_on_file'
+            ? loaded.savedPaymentMethod.square_card_id
+            : request.body?.sourceId
         const squareResult = await processSquarePayment({
-          sourceId: request.body?.sourceId,
+          sourceId,
           amountCents: amountDueCents,
           tipCents: Math.min(calculated.tip_cents, amountDueCents),
           idempotencyKey,
           checkoutId: loaded.checkout.id,
           customerName: loaded.appointment.customer_name,
+          customerId:
+            method === 'card_on_file'
+              ? loaded.savedPaymentMethod.square_customer_id
+              : undefined,
         })
         if (squareResult.error) {
           return json(response, 502, { error: squareResult.error })

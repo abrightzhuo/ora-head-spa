@@ -10,10 +10,12 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+.android-sdk
 *.local
 .chrome-*
 .gh-cli
 .swift-home
+.supabase-home
 .trae
 .vercel
 .vercel-cli

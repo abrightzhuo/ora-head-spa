@@ -3,6 +3,7 @@ import {
   getAuthenticatedUser,
   json,
 } from './_lib/supabase.js'
+import { sendBookingConfirmation } from './_lib/booking-notifications.js'
 
 const uuidPattern =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
@@ -220,7 +221,7 @@ async function customerRecords(request, response) {
     adminClient
       .from('appointments')
       .select(
-        'id, customer_name, service, provider_id, starts_at, ends_at, status, preferred_date, created_at',
+        'id, customer_name, service, provider_id, starts_at, ends_at, status, preferred_date, cancellation_deadline, created_at',
       )
       .eq('customer_user_id', user.id)
       .order('starts_at', { ascending: false }),
@@ -761,6 +762,326 @@ async function purchaseMembership(request, response) {
   })
 }
 
+function scheduleParts(value, timezone) {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: timezone,
+    weekday: 'short',
+    hour: '2-digit',
+    minute: '2-digit',
+    hourCycle: 'h23',
+  }).formatToParts(value)
+  const get = (type) => parts.find((part) => part.type === type)?.value ?? ''
+  const weekday = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(
+    get('weekday'),
+  )
+  return {
+    weekday,
+    minutes: Number(get('hour')) * 60 + Number(get('minute')),
+  }
+}
+
+function timeToMinutes(value) {
+  const [hour, minute] = String(value).split(':').map(Number)
+  return hour * 60 + minute
+}
+
+async function validateManagedSlot({
+  adminClient,
+  appointmentId,
+  providerId,
+  serviceId,
+  startsAt,
+  endsAt,
+  timezone,
+}) {
+  const [{ data: staffService }, { data: availability }, blocks, conflicts] =
+    await Promise.all([
+      adminClient
+        .from('staff_services')
+        .select('staff_id')
+        .eq('staff_id', providerId)
+        .eq('service_id', serviceId)
+        .eq('active', true)
+        .maybeSingle(),
+      adminClient
+        .from('weekly_availability')
+        .select('start_time, end_time')
+        .eq('staff_id', providerId)
+        .eq('weekday', scheduleParts(startsAt, timezone).weekday)
+        .eq('active', true),
+      adminClient
+        .from('schedule_blocks')
+        .select('id')
+        .lt('starts_at', endsAt.toISOString())
+        .gt('ends_at', startsAt.toISOString())
+        .or(`staff_id.is.null,staff_id.eq.${providerId}`),
+      adminClient
+        .from('appointments')
+        .select('id')
+        .eq('provider_id', providerId)
+        .neq('id', appointmentId || '00000000-0000-0000-0000-000000000000')
+        .lt('starts_at', endsAt.toISOString())
+        .gt('ends_at', startsAt.toISOString())
+        .not(
+          'status',
+          'in',
+          '(cancelled_or_changed_outside_24h,cancelled_or_changed_within_24h,no_show_no_contact)',
+        ),
+    ])
+
+  if (!staffService) return 'provider_service_unavailable'
+  if (blocks.error || conflicts.error) return 'availability_unavailable'
+  if ((blocks.data ?? []).length || (conflicts.data ?? []).length) {
+    return 'slot_unavailable'
+  }
+
+  const startMinutes = scheduleParts(startsAt, timezone).minutes
+  const endMinutes = startMinutes + (endsAt.getTime() - startsAt.getTime()) / 60000
+  const withinSchedule = (availability ?? []).some(
+    (window) =>
+      startMinutes >= timeToMinutes(window.start_time) &&
+      endMinutes <= timeToMinutes(window.end_time),
+  )
+  return withinSchedule ? null : 'slot_unavailable'
+}
+
+async function manageAppointment(request, response) {
+  const authenticated = await getAuthenticatedStaff(request, [
+    'owner',
+    'manager',
+    'front_desk',
+    'staff',
+  ])
+  if (authenticated.error) {
+    return json(response, authenticated.status, {
+      error: authenticated.error,
+    })
+  }
+
+  const { adminClient, profile } = authenticated
+  const action = request.body?.action
+  const appointmentId = String(request.body?.appointmentId ?? '')
+  const customerId = String(request.body?.customerId ?? '')
+  const serviceId = String(request.body?.serviceId ?? '')
+  const providerId = String(request.body?.providerId ?? '')
+  const startsAt = new Date(String(request.body?.startsAt ?? ''))
+  const notes = String(request.body?.notes ?? '').trim().slice(0, 1000)
+  const isUpdate = action === 'update_appointment'
+
+  if (
+    !['create_appointment', 'update_appointment'].includes(action) ||
+    (isUpdate && !uuidPattern.test(appointmentId)) ||
+    (!isUpdate && !uuidPattern.test(customerId)) ||
+    !uuidPattern.test(serviceId) ||
+    !uuidPattern.test(providerId) ||
+    Number.isNaN(startsAt.getTime())
+  ) {
+    return json(response, 400, { error: 'invalid_input' })
+  }
+
+  const [
+    { data: settings },
+    { data: service },
+    { data: provider },
+    { data: existing },
+  ] = await Promise.all([
+    adminClient
+      .from('business_settings')
+      .select('timezone')
+      .eq('id', true)
+      .single(),
+    adminClient
+      .from('services')
+      .select('id, code, name, duration_minutes, price_cents, active')
+      .eq('id', serviceId)
+      .single(),
+    adminClient
+      .from('staff_profiles')
+      .select('id, active, bookable')
+      .eq('id', providerId)
+      .single(),
+    isUpdate
+      ? adminClient
+          .from('appointments')
+          .select('*')
+          .eq('id', appointmentId)
+          .single()
+      : Promise.resolve({ data: null }),
+  ])
+
+  if (!settings || !service?.active || !provider?.active || !provider.bookable) {
+    return json(response, 400, { error: 'service_unavailable' })
+  }
+  if (isUpdate && !existing) {
+    return json(response, 404, { error: 'appointment_not_found' })
+  }
+  if (
+    profile.role === 'staff' &&
+    ((isUpdate && existing.provider_id !== profile.id) ||
+      providerId !== profile.id)
+  ) {
+    return json(response, 403, { error: 'forbidden' })
+  }
+  if (
+    isUpdate &&
+    [
+      'checked_out',
+      'cancelled_or_changed_outside_24h',
+      'cancelled_or_changed_within_24h',
+      'no_show_no_contact',
+    ].includes(existing.status)
+  ) {
+    return json(response, 409, { error: 'appointment_not_editable' })
+  }
+
+  const endsAt = new Date(
+    startsAt.getTime() + service.duration_minutes * 60 * 1000,
+  )
+  const slotError = await validateManagedSlot({
+    adminClient,
+    appointmentId: isUpdate ? appointmentId : null,
+    providerId,
+    serviceId,
+    startsAt,
+    endsAt,
+    timezone: settings.timezone,
+  })
+  if (slotError) {
+    return json(response, slotError === 'slot_unavailable' ? 409 : 400, {
+      error: slotError,
+    })
+  }
+
+  let customer = null
+  if (isUpdate) {
+    customer = {
+      id: existing.customer_id,
+      auth_user_id: existing.customer_user_id,
+      name: existing.customer_name,
+      email: existing.customer_email,
+      phone: existing.phone,
+    }
+  } else {
+    const customerResult = await adminClient
+      .from('customers')
+      .select('id, auth_user_id, name, email, phone')
+      .eq('id', customerId)
+      .single()
+    customer = customerResult.data
+  }
+  if (!customer) {
+    return json(response, 404, { error: 'customer_not_found' })
+  }
+
+  const { data: membership } = customer.auth_user_id
+    ? await adminClient
+        .from('memberships')
+        .select(
+          'status, complimentary_service_code, complimentary_redeemed_at, starts_at, expires_at',
+        )
+        .eq('user_id', customer.auth_user_id)
+        .eq('status', 'active')
+        .lte('starts_at', startsAt.toISOString())
+        .gt('expires_at', startsAt.toISOString())
+        .maybeSingle()
+    : { data: null }
+  const priceCents = membershipServicePrice(service, startsAt, membership)
+  const values = {
+    customer_id: customer.id,
+    customer_name: customer.name,
+    customer_email: customer.email,
+    phone: customer.phone,
+    service: service.name,
+    service_id: service.id,
+    provider_id: providerId,
+    preferred_date: dateInTimezone(startsAt, settings.timezone),
+    starts_at: startsAt.toISOString(),
+    ends_at: endsAt.toISOString(),
+    message: notes || null,
+    service_price_cents: priceCents,
+    cancellation_deadline: new Date(
+      startsAt.getTime() - 24 * 60 * 60 * 1000,
+    ).toISOString(),
+    updated_by: profile.id,
+  }
+
+  const result = isUpdate
+    ? await adminClient
+        .from('appointments')
+        .update(values)
+        .eq('id', appointmentId)
+        .select('*')
+        .single()
+    : await adminClient
+        .from('appointments')
+        .insert({
+          ...values,
+          customer_user_id: customer.auth_user_id,
+          status: 'pending',
+          source: 'front_desk',
+        })
+        .select('*')
+        .single()
+
+  if (result.error || !result.data) {
+    const conflict =
+      result.error?.code === '23P01' ||
+      result.error?.message?.includes('appointments_provider_time_excl')
+    return json(response, conflict ? 409 : 500, {
+      error: conflict ? 'slot_unavailable' : 'appointment_save_failed',
+    })
+  }
+
+  return json(response, isUpdate ? 200 : 201, {
+    appointment: result.data,
+  })
+}
+
+async function cancelCustomerAppointment(request, response) {
+  const authenticated = await getAuthenticatedUser(request)
+  if (authenticated.error) {
+    return json(response, authenticated.status, {
+      error: authenticated.error,
+    })
+  }
+  const { adminClient, user } = authenticated
+  const appointmentId = String(request.body?.appointmentId ?? '')
+  if (!uuidPattern.test(appointmentId)) {
+    return json(response, 400, { error: 'invalid_input' })
+  }
+
+  const { data: appointment } = await adminClient
+    .from('appointments')
+    .select('*')
+    .eq('id', appointmentId)
+    .eq('customer_user_id', user.id)
+    .single()
+  if (!appointment) {
+    return json(response, 404, { error: 'appointment_not_found' })
+  }
+  if (
+    appointment.status !== 'pending' ||
+    new Date(appointment.starts_at).getTime() <= Date.now()
+  ) {
+    return json(response, 409, { error: 'appointment_not_cancellable' })
+  }
+
+  const status =
+    Date.now() < new Date(appointment.cancellation_deadline).getTime()
+      ? 'cancelled_or_changed_outside_24h'
+      : 'cancelled_or_changed_within_24h'
+  const { data, error } = await adminClient
+    .from('appointments')
+    .update({ status })
+    .eq('id', appointment.id)
+    .select('id, status')
+    .single()
+  if (error || !data) {
+    return json(response, 500, { error: 'appointment_cancel_failed' })
+  }
+  return json(response, 200, { appointment: data })
+}
+
 export default async function handler(request, response) {
   if (request.method === 'GET' && request.query?.mine === '1') {
     response.setHeader('Cache-Control', 'private, no-store, max-age=0')
@@ -776,6 +1097,22 @@ export default async function handler(request, response) {
     request.body?.action === 'purchase_membership'
   ) {
     return purchaseMembership(request, response)
+  }
+
+  if (
+    request.method === 'POST' &&
+    ['create_appointment', 'update_appointment'].includes(
+      request.body?.action,
+    )
+  ) {
+    return manageAppointment(request, response)
+  }
+
+  if (
+    request.method === 'POST' &&
+    request.body?.action === 'cancel_appointment'
+  ) {
+    return cancelCustomerAppointment(request, response)
   }
 
   if (request.method !== 'POST') {
@@ -1192,7 +1529,7 @@ export default async function handler(request, response) {
     ],
   }
 
-  const { error: notificationError } = await adminClient
+  const { data: queuedNotifications, error: notificationError } = await adminClient
     .from('notification_queue')
     .insert([
       {
@@ -1210,6 +1547,46 @@ export default async function handler(request, response) {
         payload: notificationPayload,
       },
     ])
+    .select('id, channel')
+
+  let notificationDelivery = {
+    email: { status: 'not_queued' },
+    sms: { status: 'not_queued' },
+  }
+  if (!notificationError) {
+    notificationDelivery = await sendBookingConfirmation({
+      appointmentId: appointment.id,
+      locale,
+      email,
+      phone,
+      payload: notificationPayload,
+    })
+    await Promise.all(
+      (queuedNotifications ?? []).map((notification) => {
+        const delivery = notificationDelivery[notification.channel]
+        const status =
+          delivery?.status === 'sent'
+            ? 'sent'
+            : delivery?.status === 'failed'
+              ? 'failed'
+              : 'skipped'
+        return adminClient
+          .from('notification_queue')
+          .update({
+            status,
+            attempts: 1,
+            last_error:
+              status === 'failed'
+                ? delivery?.error ?? 'delivery_failed'
+                : status === 'skipped'
+                  ? 'provider_not_configured'
+                  : null,
+            sent_at: status === 'sent' ? new Date().toISOString() : null,
+          })
+          .eq('id', notification.id)
+      }),
+    )
+  }
 
   return json(response, 201, {
     appointment: {
@@ -1223,5 +1600,6 @@ export default async function handler(request, response) {
       },
     },
     notifications_queued: !notificationError,
+    notification_delivery: notificationDelivery,
   })
 }
