@@ -33,3 +33,4 @@ releases
 *.njsproj
 *.sln
 *.sw?
+.env*
