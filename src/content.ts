@@ -1,6 +1,6 @@
 export const images = {
   logo: '/images/logo.jpg',
-  storefront: '/images/storefront.png',
+  storefront: '/images/storefront.jpg',
   interiorHall: '/images/interior-01.jpg',
   interiorLounge: '/images/interior-02.png',
 }
