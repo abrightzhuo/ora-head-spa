@@ -280,6 +280,14 @@ body.auth-modal-open {
   color: var(--olive);
 }
 
+.customer-account-page .site-header .brand-mark__img--color {
+  display: block;
+}
+
+.customer-account-page .site-header .brand-mark__img--light {
+  display: none;
+}
+
 .customer-account-head {
   min-height: 290px;
   display: flex;
@@ -711,44 +719,50 @@ h2 {
 }
 
 .brand-mark {
-  display: inline-grid;
+  display: inline-flex;
   width: fit-content;
   align-items: center;
   color: var(--olive);
-  grid-template-columns: auto auto;
 }
 
-.brand-mark--light,
-.site-header:not(.is-scrolled) .brand-mark {
-  color: #fffaf0;
+.brand-mark__img {
+  display: block;
+  width: auto;
+  height: 96px;
 }
 
-.brand-mark__icon {
-  display: grid;
-  width: 26px;
-  height: 26px;
-  margin-right: 8px;
-  border: 1px solid currentColor;
-  border-radius: 50%;
-  place-items: center;
+.brand-mark--compact .brand-mark__img {
+  height: 44px;
 }
 
-.brand-mark__name {
-  font-family: var(--display);
-  font-size: 28px;
-  letter-spacing: 0.12em;
-  line-height: 1;
+.brand-mark__img--light {
+  display: none;
 }
 
-.brand-mark__line {
-  margin-top: 5px;
-  font-size: 7px;
-  letter-spacing: 0.22em;
-  grid-column: 1 / -1;
+.brand-mark--light .brand-mark__img--color {
+  display: none;
 }
 
-.brand-mark--compact .brand-mark__name {
-  font-size: 25px;
+.brand-mark--light .brand-mark__img--light {
+  display: block;
+}
+
+.site-header:not(.is-scrolled) .brand-mark__img--color {
+  display: none;
+}
+
+.site-header:not(.is-scrolled) .brand-mark__img--light {
+  display: block;
+}
+
+.footer .brand-mark__img--color,
+.footer .brand-mark--light .brand-mark__img--color {
+  display: block;
+}
+
+.footer .brand-mark__img--light,
+.footer .brand-mark--light .brand-mark__img--light {
+  display: none;
 }
 
 .desktop-nav {
@@ -2415,8 +2429,18 @@ h2 {
     color: var(--olive);
   }
 
-  .site-header .brand-mark__name {
-    font-size: 23px;
+  .site-header:not(.is-scrolled) .brand-mark__img--color,
+  .site-header.is-scrolled .brand-mark__img--color {
+    display: block;
+  }
+
+  .site-header:not(.is-scrolled) .brand-mark__img--light,
+  .site-header.is-scrolled .brand-mark__img--light {
+    display: none;
+  }
+
+  .brand-mark--compact .brand-mark__img {
+    height: 38px;
   }
 
   .desktop-nav,

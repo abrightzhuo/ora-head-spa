@@ -1,7 +1,3 @@
-import { Leaf } from 'lucide-react'
-import { copy } from '../localizedContent'
-import { useSiteStore } from '../store/useSiteStore'
-
 type BrandMarkProps = {
   light?: boolean
   compact?: boolean
@@ -13,21 +9,25 @@ export function BrandMark({
   compact = false,
   href = '#home',
 }: BrandMarkProps) {
-  const locale = useSiteStore((state) => state.locale)
+  const base = '/images/ora-logo'
 
   return (
     <a
       className={`brand-mark ${light ? 'brand-mark--light' : ''} ${compact ? 'brand-mark--compact' : ''}`}
       href={href}
-      aria-label="ORA"
+      aria-label="ORA Head Spa & Wellness"
     >
-      <span className="brand-mark__icon" aria-hidden="true">
-        <Leaf size={compact ? 16 : 19} strokeWidth={1.4} />
-      </span>
-      <span className="brand-mark__name">ORA</span>
-      {!compact && (
-        <span className="brand-mark__line">{copy[locale].hero.eyebrow}</span>
-      )}
+      <img
+        className="brand-mark__img brand-mark__img--color"
+        src={`${base}.png`}
+        alt="ORA Head Spa & Wellness"
+      />
+      <img
+        className="brand-mark__img brand-mark__img--light"
+        src={`${base}-light.png`}
+        alt=""
+        aria-hidden="true"
+      />
     </a>
   )
 }
