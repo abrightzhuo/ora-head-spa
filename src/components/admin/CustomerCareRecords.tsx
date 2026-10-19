@@ -313,10 +313,15 @@ export function CustomerCareRecords({
 
   const uploadPhoto = async (file: File, kind: 'before' | 'after') => {
     const image = await readFileAsDataUrl(file)
-    const response = await fetch('/api/customer-record-photo', {
+    const response = await fetch('/api/customer-records', {
       method: 'POST',
       headers: authHeaders,
-      body: JSON.stringify({ customerId, kind, image }),
+      body: JSON.stringify({
+        action: 'upload-photo',
+        customerId,
+        kind,
+        image,
+      }),
     })
     const result = (await response.json()) as { path?: string; error?: string }
     if (!response.ok || !result.path) {
@@ -328,11 +333,10 @@ export function CustomerCareRecords({
   const deletePhoto = async (path: string | null) => {
     if (!path) return
     try {
-      await fetch('/api/customer-record-photo', {
-        method: 'DELETE',
-        headers: authHeaders,
-        body: JSON.stringify({ customerId, path }),
-      })
+      await fetch(
+        `/api/customer-records?photoPath=${encodeURIComponent(path)}`,
+        { method: 'DELETE', headers: authHeaders },
+      )
     } catch {
       /* 旧照片清理失败不影响主流程 */
     }

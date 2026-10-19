@@ -1,6 +1,72 @@
 import { getAuthenticatedStaff, json } from './_lib/supabase.js'
 
 const managerRoles = ['owner', 'manager']
+const photoBucket = 'provider-photos'
+const photoMimeExtensions = {
+  'image/jpeg': 'jpg',
+  'image/png': 'png',
+  'image/webp': 'webp',
+}
+const photoMaxSize = 3 * 1024 * 1024
+
+async function saveProviderPhoto(client, providerId, image) {
+  const match = String(image ?? '').match(
+    /^data:(image\/(?:jpeg|png|webp));base64,(.+)$/,
+  )
+  if (!match) return { error: 'invalid_image', status: 400 }
+
+  const [, contentType, encoded] = match
+  const file = Buffer.from(encoded, 'base64')
+  if (file.length === 0 || file.length > photoMaxSize) {
+    return { error: 'image_too_large', status: 413 }
+  }
+
+  const { error: bucketError } = await client.storage.getBucket(photoBucket)
+  if (bucketError) {
+    const { error: createError } = await client.storage.createBucket(
+      photoBucket,
+      {
+        public: true,
+        fileSizeLimit: photoMaxSize,
+        allowedMimeTypes: Object.keys(photoMimeExtensions),
+      },
+    )
+    if (createError && !/already exists/i.test(createError.message)) {
+      return { error: 'storage_unavailable', status: 500 }
+    }
+  }
+
+  const path =
+    `${providerId}/profile-${Date.now()}.` + photoMimeExtensions[contentType]
+  const { error: uploadError } = await client.storage
+    .from(photoBucket)
+    .upload(path, file, {
+      contentType,
+      cacheControl: '31536000',
+      upsert: false,
+    })
+  if (uploadError) return { error: 'photo_upload_failed', status: 500 }
+
+  const { data: publicData } = client.storage
+    .from(photoBucket)
+    .getPublicUrl(path)
+  const { data: profile, error } = await client
+    .from('staff_profiles')
+    .update({
+      photo_url: publicData.publicUrl,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', providerId)
+    .select('*')
+    .single()
+
+  if (error || !profile) {
+    await client.storage.from(photoBucket).remove([path])
+    return { error: 'profile_update_failed', status: 500 }
+  }
+
+  return { profile }
+}
 
 function optionalText(value, maxLength) {
   const normalized = String(value ?? '').trim()
@@ -35,6 +101,18 @@ export default async function handler(request, response) {
     .single()
   if (providerError || !provider || provider.role !== 'staff') {
     return json(response, 404, { error: 'provider_not_found' })
+  }
+
+  if (request.body?.action === 'photo') {
+    const result = await saveProviderPhoto(
+      auth.adminClient,
+      providerId,
+      request.body?.image,
+    )
+    if (result.error) {
+      return json(response, result.status, { error: result.error })
+    }
+    return json(response, 200, { profile: result.profile })
   }
 
   const experienceYears = request.body?.experienceYears

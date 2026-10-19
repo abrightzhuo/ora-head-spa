@@ -3,6 +3,14 @@ import { getAuthenticatedStaff, json } from './_lib/supabase.js'
 const bucketName = 'customer-care-photos'
 const signedUrlTtl = 60 * 60
 const deleteRoles = ['owner', 'manager']
+const photoMimeExtensions = {
+  'image/jpeg': 'jpg',
+  'image/png': 'png',
+  'image/webp': 'webp',
+}
+const photoMaxSize = 3 * 1024 * 1024
+const photoPathPattern =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\/(before|after)-\d+\.(jpg|png|webp)$/i
 const uuidPattern =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 const datePattern = /^\d{4}-\d{2}-\d{2}$/
@@ -58,6 +66,52 @@ async function withSignedPhotos(client, records) {
       afterPhotoUrl: await signPhoto(client, record.after_photo_path),
     })),
   )
+}
+
+async function ensurePhotoBucket(client) {
+  const { error } = await client.storage.getBucket(bucketName)
+  if (!error) return true
+
+  const { error: createError } = await client.storage.createBucket(bucketName, {
+    public: false,
+    fileSizeLimit: photoMaxSize,
+    allowedMimeTypes: Object.keys(photoMimeExtensions),
+  })
+  return !createError || /already exists/i.test(createError.message)
+}
+
+async function uploadCarePhoto(client, customerId, kind, image) {
+  const match = String(image ?? '').match(
+    /^data:(image\/(?:jpeg|png|webp));base64,(.+)$/,
+  )
+  if (!match) return { error: 'invalid_image', status: 400 }
+
+  const [, contentType, encoded] = match
+  const file = Buffer.from(encoded, 'base64')
+  if (file.length === 0 || file.length > photoMaxSize) {
+    return { error: 'image_too_large', status: 413 }
+  }
+
+  if (!(await ensurePhotoBucket(client))) {
+    return { error: 'storage_unavailable', status: 500 }
+  }
+
+  const path =
+    `${customerId}/${kind}-${Date.now()}.` + photoMimeExtensions[contentType]
+  const { error: uploadError } = await client.storage
+    .from(bucketName)
+    .upload(path, file, {
+      contentType,
+      cacheControl: '31536000',
+      upsert: false,
+    })
+  if (uploadError) return { error: 'photo_upload_failed', status: 500 }
+
+  const { data: signed } = await client.storage
+    .from(bucketName)
+    .createSignedUrl(path, signedUrlTtl)
+
+  return { path, url: signed?.signedUrl ?? null }
 }
 
 async function findCustomer(client, customerId) {
@@ -124,6 +178,20 @@ export default async function handler(request, response) {
   }
 
   if (request.method === 'DELETE') {
+    const photoPathValue = String(request.query?.photoPath ?? '')
+    if (photoPathValue) {
+      if (!photoPathPattern.test(photoPathValue)) {
+        return json(response, 400, { error: 'invalid_path' })
+      }
+      const { error } = await adminClient.storage
+        .from(bucketName)
+        .remove([photoPathValue])
+      if (error) {
+        return json(response, 500, { error: 'delete_failed' })
+      }
+      return json(response, 200, { ok: true })
+    }
+
     if (!deleteRoles.includes(profile.role)) {
       return json(response, 403, { error: 'forbidden' })
     }
@@ -179,6 +247,24 @@ export default async function handler(request, response) {
     return json(response, found.error === 'customer_not_found' ? 404 : 500, {
       error: found.error,
     })
+  }
+
+  if (action === 'upload-photo') {
+    const kind = String(request.body?.kind ?? '').trim()
+    if (!['before', 'after'].includes(kind)) {
+      return json(response, 400, { error: 'invalid_request' })
+    }
+
+    const result = await uploadCarePhoto(
+      adminClient,
+      customerId,
+      kind,
+      request.body?.image,
+    )
+    if (result.error) {
+      return json(response, result.status, { error: result.error })
+    }
+    return json(response, 200, { path: result.path, url: result.url })
   }
 
   if (action === 'save-profile') {

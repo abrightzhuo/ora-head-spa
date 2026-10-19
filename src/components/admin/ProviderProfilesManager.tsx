@@ -150,13 +150,13 @@ export function ProviderProfilesManager({
       reader.onerror = () => reject(reader.error)
       reader.readAsDataURL(file)
     }).catch(() => '')
-    const response = await fetch('/api/profile-photo', {
+    const response = await fetch('/api/provider-profile', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${await token()}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ providerId: provider.id, image }),
+      body: JSON.stringify({ action: 'photo', providerId: provider.id, image }),
     })
     const result = (await response.json()) as { profile?: StaffProfile }
     if (!response.ok || !result.profile) {
