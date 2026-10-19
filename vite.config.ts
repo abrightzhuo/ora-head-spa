@@ -7,6 +7,15 @@ export default defineConfig({
   build: {
     sourcemap: 'hidden',
   },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'https://www.myoraspa.com',
+        changeOrigin: true,
+        secure: true,
+      },
+    },
+  },
   plugins: [
     react({
       babel: {

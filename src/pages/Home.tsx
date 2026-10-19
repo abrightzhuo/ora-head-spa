@@ -5,10 +5,12 @@ import { Footer, MobileTabBar } from '../components/FooterMobile'
 import { Header } from '../components/Header'
 import { Hero, Philosophy } from '../components/HeroPhilosophy'
 import { Ritual, Services } from '../components/ServicesRitual'
+import { isComingSoon } from '../lib/comingSoon'
 import { useSiteStore } from '../store/useSiteStore'
 
 export default function Home() {
   const setActiveSection = useSiteStore((state) => state.setActiveSection)
+  const comingSoon = isComingSoon()
 
   useEffect(() => {
     const revealObserver = new IntersectionObserver(
@@ -78,16 +80,20 @@ export default function Home() {
       <Header />
       <main>
         <Hero />
-        <Philosophy />
-        <Services />
-        <Ritual />
-        <SpaceGallery />
-        <About />
-        <Testimonials />
-        <BookingV2 />
+        {!comingSoon && (
+          <>
+            <Philosophy />
+            <Services />
+            <Ritual />
+            <SpaceGallery />
+            <About />
+            <Testimonials />
+            <BookingV2 />
+          </>
+        )}
       </main>
-      <Footer />
-      <MobileTabBar />
+      {!comingSoon && <Footer />}
+      {!comingSoon && <MobileTabBar />}
     </>
   )
 }

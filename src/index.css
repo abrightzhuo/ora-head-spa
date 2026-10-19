@@ -983,6 +983,16 @@ h2 {
   gap: 30px;
 }
 
+.hero__coming-soon {
+  margin: 0;
+  color: var(--gold-light);
+  font-family: var(--display);
+  font-size: clamp(30px, 3vw, 42px);
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  line-height: 1.1;
+}
+
 .text-link {
   display: inline-flex;
   align-items: center;
@@ -7751,5 +7761,22 @@ html.is-native-app textarea {
 
   .membership-manager__head {
     display: none;
+  }
+}
+
+/* Coming soon 版本：首屏是唯一内容，撑满视口 */
+html[data-coming-soon='true'] body {
+  background: var(--night);
+}
+
+html[data-coming-soon='true'] .hero {
+  height: 100svh;
+  min-height: 0;
+}
+
+@media (max-width: 767px) {
+  html[data-coming-soon='true'] .hero {
+    height: calc(100svh - 64px);
+    border-radius: 0;
   }
 }

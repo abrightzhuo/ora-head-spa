@@ -1,5 +1,6 @@
 import { ArrowDown, Asterisk, Droplets, Flower2, ScanFace, Wind } from 'lucide-react'
 import { images } from '../content'
+import { isComingSoon } from '../lib/comingSoon'
 import { copy } from '../localizedContent'
 import { useSiteStore } from '../store/useSiteStore'
 
@@ -8,6 +9,7 @@ const valueIcons = [Flower2, ScanFace, Wind, Droplets]
 export function Hero() {
   const locale = useSiteStore((state) => state.locale)
   const t = copy[locale].hero
+  const comingSoon = isComingSoon()
 
   return (
     <section className="hero" id="home" aria-labelledby="hero-title">
@@ -23,19 +25,23 @@ export function Hero() {
           <em>{t.italic}</em>
         </h1>
         <p className="hero__description reveal-up delay-2">{t.description}</p>
-        <div className="hero__actions reveal-up delay-3">
-          <a
-            className="button button--gold"
-            href="#booking"
-            onClick={() => window.dispatchEvent(new Event('ora:open-booking'))}
-          >
-            {copy[locale].book}
-          </a>
-          <a className="text-link text-link--light" href="#services">
-            {t.explore}
-            <ArrowDown size={16} />
-          </a>
-        </div>
+        {comingSoon ? (
+          <p className="hero__coming-soon reveal-up delay-3">Coming soon</p>
+        ) : (
+          <div className="hero__actions reveal-up delay-3">
+            <a
+              className="button button--gold"
+              href="#booking"
+              onClick={() => window.dispatchEvent(new Event('ora:open-booking'))}
+            >
+              {copy[locale].book}
+            </a>
+            <a className="text-link text-link--light" href="#services">
+              {t.explore}
+              <ArrowDown size={16} />
+            </a>
+          </div>
+        )}
       </div>
       <div className="hero__side-note">{t.note}</div>
     </section>

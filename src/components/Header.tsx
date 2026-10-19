@@ -10,6 +10,7 @@ import {
 } from 'lucide-react'
 import { useCustomerAuth } from '../contexts/customerAuth'
 import { customerCopy } from '../customerCopy'
+import { isComingSoon } from '../lib/comingSoon'
 import { copy } from '../localizedContent'
 import {
   localeLabels,
@@ -114,6 +115,7 @@ export function Header({
   returnToHome = false,
 }: HeaderProps = {}) {
   const locale = useSiteStore((state) => state.locale)
+  const comingSoon = isComingSoon()
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const t = copy[locale]
@@ -147,6 +149,7 @@ export function Header({
     <header className={`site-header ${scrolled ? 'is-scrolled' : ''}`}>
       <div className="site-header__inner">
         <BrandMark compact href={homeHref} />
+        {!comingSoon && (
         <nav
           className="desktop-nav"
           aria-label={accessibility.navigation}
@@ -163,6 +166,8 @@ export function Header({
                 {membershipLabel[locale]}
               </a>
         </nav>
+        )}
+        {!comingSoon && (
         <div className="site-header__actions">
           <LanguageSwitch />
           {user ? (
@@ -207,7 +212,9 @@ export function Header({
             {menuOpen ? <X /> : <Menu />}
           </button>
         </div>
+        )}
       </div>
+      {!comingSoon && (
       <div className={`mobile-menu ${menuOpen ? 'is-open' : ''}`}>
         <div className="mobile-menu__content">
           <p>ORA / {t.hero.explore}</p>
@@ -260,6 +267,7 @@ export function Header({
           </a>
         </div>
       </div>
+      )}
     </header>
   )
 }
