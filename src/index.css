@@ -30,6 +30,11 @@
   -webkit-font-smoothing: antialiased;
 }
 
+html,
+body {
+  overflow-x: hidden;
+}
+
 body.auth-modal-open {
   overflow: hidden;
 }
@@ -1033,6 +1038,7 @@ h2 {
 .philosophy {
   position: relative;
   display: grid;
+  overflow: hidden;
   padding-block: 150px 138px;
   grid-template-columns: 1.1fr 0.9fr;
   column-gap: 10%;
@@ -3000,6 +3006,14 @@ h2 {
   .mobile-tabbar a.is-active {
     color: var(--gold-dark);
     background: rgba(216, 188, 130, 0.23);
+  }
+
+  .mobile-tabbar .tabbar-care-icon {
+    width: 26px;
+    height: 17px;
+    background-color: currentColor;
+    -webkit-mask: url('/images/care-icon.png') center / contain no-repeat;
+    mask: url('/images/care-icon.png') center / contain no-repeat;
   }
 }
 
