@@ -25,6 +25,7 @@ import {
   formatEasternDateTime,
 } from '../../lib/dateTime'
 import { copy } from '../../localizedContent'
+import { CustomerCareRecords } from './CustomerCareRecords'
 
 type AdminLocale = 'zh' | 'en'
 
@@ -348,6 +349,12 @@ export function CustomerRecordsPanel({
     () => staff.filter((profile) => profile.active && profile.bookable),
     [staff],
   )
+  const canDeleteCareRecords = useMemo(() => {
+    const role = staff.find(
+      (profile) => profile.id === session.user.id,
+    )?.role
+    return role === 'owner' || role === 'manager'
+  }, [session.user.id, staff])
 
   useEffect(() => {
     if (!walkInServiceId && services[0]) {
@@ -493,6 +500,17 @@ export function CustomerRecordsPanel({
                   </p>
                 )}
               </div>
+
+              {selected.customer && (
+                <CustomerCareRecords
+                  locale={locale}
+                  customerId={selected.customer.id}
+                  session={session}
+                  services={services}
+                  staff={staff}
+                  canDelete={canDeleteCareRecords}
+                />
+              )}
 
               {selected.customer && (
                 <div className="customer-records__walk-in">

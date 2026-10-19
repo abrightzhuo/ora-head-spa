@@ -300,6 +300,38 @@ export type TimeEditRequest = {
   created_at: string
 }
 
+export type CustomerCareProfile = {
+  customer_id: string
+  allergies: string
+  health_notes: string
+  scalp_baseline: string
+  created_by: string | null
+  updated_by: string | null
+  created_at: string
+  updated_at: string
+}
+
+export type CustomerCareRecord = {
+  id: string
+  customer_id: string
+  appointment_id: string | null
+  record_date: string
+  service_ids: string[]
+  service_names: string[]
+  provider_id: string | null
+  scalp_assessment: string
+  treatment_notes: string
+  follow_up: string
+  before_photo_path: string | null
+  after_photo_path: string | null
+  beforePhotoUrl?: string | null
+  afterPhotoUrl?: string | null
+  created_by: string | null
+  updated_by: string | null
+  created_at: string
+  updated_at: string
+}
+
 export type EarningsSummary = {
   staff_id: string
   staff_name: string

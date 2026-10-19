@@ -4216,6 +4216,423 @@ h2 {
   white-space: pre-wrap;
 }
 
+/* Customer care records (health profile + visit history) */
+.care-records {
+  margin-top: 22px;
+  padding: 20px;
+  border: 1px solid var(--wood-line);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.62);
+}
+
+.care-records__head,
+.care-records__head > div,
+.care-records__item-head,
+.care-records__item-head > div,
+.care-records__provider,
+.care-records__actions,
+.care-records__item-actions,
+.care-records__form-head,
+.care-records__photo-actions,
+.care-records__compare a,
+.care-records__hint {
+  display: flex;
+  align-items: center;
+}
+
+.care-records__head {
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.care-records__head > div {
+  gap: 8px;
+  color: var(--gold-dark);
+}
+
+.care-records__head h3 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 15px;
+}
+
+.care-records__head small {
+  color: var(--ink-soft);
+  font-size: 10px;
+  font-weight: 400;
+}
+
+.care-records__head--records {
+  margin-top: 26px;
+  padding-top: 18px;
+  border-top: 1px solid var(--wood-line);
+}
+
+.care-records button {
+  display: inline-flex;
+  cursor: pointer;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid var(--wood-line);
+  border-radius: 8px;
+  color: var(--ink);
+  background: transparent;
+  font-size: 11px;
+}
+
+.care-records button:hover {
+  border-color: var(--gold-dark);
+  color: var(--gold-dark);
+}
+
+.care-records button:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
+.care-records button.is-danger {
+  color: #a4452f;
+}
+
+.care-records__hint {
+  gap: 8px;
+  margin: 14px 0 0;
+  color: var(--ink-soft);
+  font-size: 12px;
+}
+
+.care-records__hint.is-error {
+  color: #a4452f;
+}
+
+.care-records__spin {
+  animation: spin 1s linear infinite;
+}
+
+.care-records__health-view dl {
+  display: grid;
+  margin: 16px 0 0;
+  gap: 12px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.care-records__health-view dt {
+  color: var(--ink-soft);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+}
+
+.care-records__health-view dd {
+  margin: 6px 0 0;
+  color: var(--ink);
+  font-size: 12px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.care-records__alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 14px 0 0;
+  padding: 10px 12px;
+  border-left: 2px solid #b06a45;
+  border-radius: 6px;
+  background: rgba(176, 106, 69, 0.1);
+  color: #7d3f26;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.care-records__alert span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  white-space: pre-wrap;
+}
+
+.care-records__health,
+.care-records__form {
+  display: grid;
+  margin-top: 16px;
+  gap: 12px;
+}
+
+.care-records__health label,
+.care-records__field,
+.care-records__grid label {
+  display: grid;
+  gap: 6px;
+  color: var(--ink-soft);
+  font-size: 11px;
+}
+
+.care-records input[type='date'],
+.care-records select,
+.care-records textarea {
+  width: 100%;
+  padding: 9px 11px;
+  border: 1px solid var(--wood-line);
+  border-radius: 8px;
+  color: var(--ink);
+  background: var(--ivory);
+  font-family: inherit;
+  font-size: 12px;
+}
+
+.care-records textarea {
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.care-records__actions {
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.care-records__message {
+  margin: 12px 0 0;
+  color: var(--gold-dark);
+  font-size: 11px;
+}
+
+.care-records__form {
+  margin-top: 16px;
+  padding: 18px;
+  border: 1px solid var(--wood-line);
+  border-radius: 12px;
+  background: rgba(244, 239, 230, 0.55);
+}
+
+.care-records__form-head {
+  justify-content: space-between;
+}
+
+.care-records__form-head h4 {
+  margin: 0;
+  font-size: 13px;
+}
+
+.care-records__grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.care-records__services {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.care-records__services legend {
+  margin-bottom: 8px;
+  color: var(--ink-soft);
+  font-size: 11px;
+}
+
+.care-records__services label {
+  display: inline-flex;
+  cursor: pointer;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px solid var(--wood-line);
+  border-radius: 999px;
+  background: var(--ivory);
+  font-size: 11px;
+}
+
+.care-records__services input {
+  margin: 0;
+  accent-color: var(--gold-dark);
+}
+
+.care-records__photos {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.care-records__photo {
+  display: grid;
+  gap: 8px;
+  padding: 10px;
+  border: 1px dashed var(--wood-line);
+  border-radius: 10px;
+  font-size: 11px;
+  color: var(--ink-soft);
+}
+
+.care-records__photo > a {
+  display: block;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.care-records__photo img,
+.care-records__compare img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  background: var(--cream);
+}
+
+.care-records__photo-empty {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 4 / 3;
+  border-radius: 8px;
+  color: var(--ink-soft);
+  background: rgba(232, 222, 206, 0.5);
+}
+
+.care-records__photo-actions {
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.care-records__photo-actions label {
+  cursor: pointer;
+  padding: 4px 9px;
+  border: 1px solid var(--wood-line);
+  border-radius: 7px;
+  color: var(--gold-dark);
+}
+
+.care-records__photo-actions input {
+  display: none;
+}
+
+.care-records__photo-actions button {
+  padding: 4px 9px;
+}
+
+.care-records__list {
+  margin-top: 6px;
+}
+
+.care-records__item {
+  padding: 16px 0;
+  border-top: 1px solid var(--wood-line);
+}
+
+.care-records__item-head {
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.care-records__item-head > div {
+  gap: 8px;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.care-records__item-head > div > svg {
+  color: var(--gold-dark);
+}
+
+.care-records__provider {
+  gap: 4px;
+  color: var(--ink-soft);
+  font-size: 11px;
+  font-weight: 400;
+}
+
+.care-records__item-actions {
+  gap: 6px;
+}
+
+.care-records__item-actions button {
+  padding: 4px 9px;
+  font-size: 10px;
+}
+
+.care-records__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.care-records__tags li {
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: rgba(216, 188, 130, 0.22);
+  color: var(--gold-dark);
+  font-size: 10px;
+}
+
+.care-records__block {
+  margin-top: 10px;
+}
+
+.care-records__block strong {
+  color: var(--ink-soft);
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.care-records__block p {
+  margin: 4px 0 0;
+  color: var(--ink);
+  font-size: 12px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.care-records__compare {
+  display: grid;
+  margin-top: 12px;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.care-records__compare a {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.care-records__compare span {
+  position: absolute;
+  bottom: 6px;
+  left: 6px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  color: #fff;
+  background: rgba(28, 26, 22, 0.62);
+  font-size: 9px;
+  letter-spacing: 0.06em;
+}
+
+@media (max-width: 767px) {
+  .care-records {
+    padding: 16px;
+  }
+
+  .care-records__health-view dl,
+  .care-records__grid,
+  .care-records__photos,
+  .care-records__compare {
+    grid-template-columns: 1fr;
+  }
+
+  .care-records__item-head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
 .appointment-calendar {
   margin-bottom: 16px;
   padding: 22px;
