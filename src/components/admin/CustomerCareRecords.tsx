@@ -33,6 +33,10 @@ const labels = {
     healthPlaceholder: '如：孕期、颈椎或肩颈问题、皮肤病史、正在服用的药物',
     scalpBaseline: '头皮基线情况',
     scalpBaselinePlaceholder: '首次记录的头皮与发质状态，便于后续对比',
+    scalpPhotosTitle: '头皮检测照片',
+    scalpPhotosNote: '最多 6 张，点击 + 上传',
+    scalpPhotoAlt: '头皮检测照片',
+    photoLimit: '最多只能保存 6 张照片',
     edit: '编辑',
     save: '保存',
     saving: '保存中…',
@@ -82,6 +86,11 @@ const labels = {
     healthPlaceholder: 'e.g. pregnancy, neck or shoulder issues, skin conditions, medication',
     scalpBaseline: 'Scalp baseline',
     scalpBaselinePlaceholder: 'First recorded scalp and hair condition for later comparison',
+    scalpPhotosTitle: 'Scalp check photos',
+    scalpPhotosNote: 'Up to 6 photos. Click + to upload.',
+    scalpPhotoAlt: 'Scalp check photo',
+    photoLimit: 'You can keep up to 6 photos.',
+
     edit: 'Edit',
     save: 'Save',
     saving: 'Saving…',
@@ -171,6 +180,8 @@ export function CustomerCareRecords({
   })
   const [healthBusy, setHealthBusy] = useState(false)
   const [healthMessage, setHealthMessage] = useState('')
+  const [scalpBusy, setScalpBusy] = useState(false)
+  const [scalpMessage, setScalpMessage] = useState('')
   const [formOpen, setFormOpen] = useState(false)
   const [formId, setFormId] = useState<string | null>(null)
   const [recordDate, setRecordDate] = useState(() => easternDateKey())
@@ -368,6 +379,71 @@ export function CustomerCareRecords({
       setHealthMessage(t.saveFailed)
     } finally {
       setHealthBusy(false)
+    }
+  }
+
+  const uploadScalpPhoto = async (file?: File) => {
+    if (!file) return
+    if (file.size > maxPhotoSize) {
+      setScalpMessage(t.imageTooLarge)
+      return
+    }
+
+    setScalpBusy(true)
+    setScalpMessage('')
+    try {
+      const image = await readFileAsDataUrl(file)
+      const response = await fetch('/api/customer-records', {
+        method: 'POST',
+        headers: authHeaders,
+        body: JSON.stringify({
+          action: 'upload-scalp-photo',
+          customerId,
+          image,
+        }),
+      })
+      const result = (await response.json()) as {
+        profile?: CustomerCareProfile
+        error?: string
+      }
+      if (!response.ok || !result.profile) {
+        throw new Error(result.error ?? 'save_failed')
+      }
+      setProfile(result.profile)
+    } catch (error) {
+      setScalpMessage(
+        error instanceof Error && error.message === 'photo_limit'
+          ? t.photoLimit
+          : t.uploadFailed,
+      )
+    } finally {
+      setScalpBusy(false)
+    }
+  }
+
+  const removeScalpPhoto = async (path: string) => {
+    setScalpBusy(true)
+    setScalpMessage('')
+    try {
+      const response = await fetch('/api/customer-records', {
+        method: 'POST',
+        headers: authHeaders,
+        body: JSON.stringify({
+          action: 'remove-scalp-photo',
+          customerId,
+          path,
+        }),
+      })
+      const result = (await response.json()) as {
+        profile?: CustomerCareProfile
+        error?: string
+      }
+      if (!response.ok || !result.profile) throw new Error('save_failed')
+      setProfile(result.profile)
+    } catch {
+      setScalpMessage(t.saveFailed)
+    } finally {
+      setScalpBusy(false)
     }
   }
 
@@ -665,6 +741,62 @@ export function CustomerCareRecords({
               {healthMessage}
             </p>
           )}
+
+          <div className="care-records__scalp">
+            <header className="care-records__scalp-head">
+              <div>
+                <Camera size={15} />
+                <h4>{t.scalpPhotosTitle}</h4>
+                <small>{t.scalpPhotosNote}</small>
+              </div>
+              {scalpBusy && (
+                <Loader2 size={14} className="care-records__spin" />
+              )}
+            </header>
+            <div className="care-records__scalp-grid">
+              {(profile?.scalpPhotoUrls ?? []).map((url, index) => {
+                const path = profile?.scalp_photos?.[index] ?? ''
+                return (
+                  <figure key={path || index}>
+                    <a href={url} target="_blank" rel="noreferrer">
+                      <img
+                        src={url}
+                        alt={`${t.scalpPhotoAlt} ${index + 1}`}
+                      />
+                    </a>
+                    <button
+                      type="button"
+                      aria-label={t.removePhoto}
+                      disabled={scalpBusy}
+                      onClick={() => void removeScalpPhoto(path)}
+                    >
+                      <X size={12} />
+                    </button>
+                  </figure>
+                )
+              })}
+              {(profile?.scalpPhotoUrls?.length ?? 0) < 6 && (
+                <label className="care-records__scalp-add">
+                  <Plus size={18} />
+                  <span>{t.choosePhoto}</span>
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    disabled={scalpBusy}
+                    onChange={(event) => {
+                      void uploadScalpPhoto(event.target.files?.[0])
+                      event.target.value = ''
+                    }}
+                  />
+                </label>
+              )}
+            </div>
+            {scalpMessage && (
+              <p className="care-records__message" role="status">
+                {scalpMessage}
+              </p>
+            )}
+          </div>
 
           <header className="care-records__head care-records__head--records">
             <div>

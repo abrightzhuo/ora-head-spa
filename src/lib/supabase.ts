@@ -305,6 +305,8 @@ export type CustomerCareProfile = {
   allergies: string
   health_notes: string
   scalp_baseline: string
+  scalp_photos: string[]
+  scalpPhotoUrls?: string[]
   created_by: string | null
   updated_by: string | null
   created_at: string

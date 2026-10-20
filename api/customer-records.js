@@ -9,8 +9,9 @@ const photoMimeExtensions = {
   'image/webp': 'webp',
 }
 const photoMaxSize = 3 * 1024 * 1024
+const scalpPhotoLimit = 6
 const photoPathPattern =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\/(before|after)-\d+\.(jpg|png|webp)$/i
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\/(before|after|scalp)-\d+\.(jpg|png|webp)$/i
 const uuidPattern =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 const datePattern = /^\d{4}-\d{2}-\d{2}$/
@@ -44,7 +45,7 @@ function photoPath(value, customerId) {
   const candidate = String(value ?? '').trim()
   if (!candidate) return null
   const allowed = new RegExp(
-    `^${customerId}/(before|after)-\\d+\\.(jpg|png|webp)$`,
+    `^${customerId}/(before|after|scalp)-\\d+\\.(jpg|png|webp)$`,
   )
   return allowed.test(candidate) ? candidate : null
 }
@@ -58,14 +59,42 @@ async function signPhoto(client, path) {
   return data?.signedUrl ?? null
 }
 
-async function withSignedPhotos(client, records) {
-  return Promise.all(
-    records.map(async (record) => ({
-      ...record,
-      beforePhotoUrl: await signPhoto(client, record.before_photo_path),
-      afterPhotoUrl: await signPhoto(client, record.after_photo_path),
-    })),
-  )
+async function signPhotoMap(client, paths) {
+  const unique = [...new Set(paths.filter(Boolean))]
+  if (unique.length === 0) return new Map()
+
+  const { data, error } = await client.storage
+    .from(bucketName)
+    .createSignedUrls(unique, signedUrlTtl)
+  if (error || !data) return new Map()
+
+  return new Map(data.map((item) => [item.path, item.signedUrl ?? null]))
+}
+
+function profileWithUrls(profile, signed) {
+  if (!profile) return null
+  const paths = Array.isArray(profile.scalp_photos) ? profile.scalp_photos : []
+  return {
+    ...profile,
+    scalpPhotoUrls: paths.map((path) => signed.get(path) ?? ''),
+  }
+}
+
+async function withScalpPhotoUrls(client, profile) {
+  if (!profile) return null
+  const paths = Array.isArray(profile.scalp_photos) ? profile.scalp_photos : []
+  const signed = await signPhotoMap(client, paths)
+  return profileWithUrls(profile, signed)
+}
+
+async function loadCareProfile(client, customerId) {
+  const { data, error } = await client
+    .from('customer_care_profiles')
+    .select('*')
+    .eq('customer_id', customerId)
+    .maybeSingle()
+  if (error) return { error: 'load_failed' }
+  return { profile: data ?? null }
 }
 
 async function ensurePhotoBucket(client) {
@@ -144,9 +173,23 @@ async function loadRecords(client, customerId) {
     return { error: 'load_failed' }
   }
 
+  const profile = profileResult.data ?? null
+  const records = recordsResult.data ?? []
+  const signed = await signPhotoMap(client, [
+    ...(Array.isArray(profile?.scalp_photos) ? profile.scalp_photos : []),
+    ...records.flatMap((record) => [
+      record.before_photo_path,
+      record.after_photo_path,
+    ]),
+  ])
+
   return {
-    profile: profileResult.data ?? null,
-    records: await withSignedPhotos(client, recordsResult.data ?? []),
+    profile: profileWithUrls(profile, signed),
+    records: records.map((record) => ({
+      ...record,
+      beforePhotoUrl: signed.get(record.before_photo_path) ?? null,
+      afterPhotoUrl: signed.get(record.after_photo_path) ?? null,
+    })),
   }
 }
 
@@ -267,6 +310,87 @@ export default async function handler(request, response) {
     return json(response, 200, { path: result.path, url: result.url })
   }
 
+  if (action === 'upload-scalp-photo') {
+    const current = await loadCareProfile(adminClient, customerId)
+    if (current.error) {
+      return json(response, 500, { error: current.error })
+    }
+    const paths = Array.isArray(current.profile?.scalp_photos)
+      ? current.profile.scalp_photos
+      : []
+    if (paths.length >= scalpPhotoLimit) {
+      return json(response, 400, { error: 'photo_limit' })
+    }
+
+    const uploaded = await uploadCarePhoto(
+      adminClient,
+      customerId,
+      'scalp',
+      request.body?.image,
+    )
+    if (uploaded.error) {
+      return json(response, uploaded.status, { error: uploaded.error })
+    }
+
+    const { data, error } = await adminClient
+      .from('customer_care_profiles')
+      .upsert(
+        {
+          customer_id: customerId,
+          scalp_photos: [...paths, uploaded.path],
+          updated_by: profile.id,
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: 'customer_id' },
+      )
+      .select('*')
+      .single()
+
+    if (error || !data) {
+      await adminClient.storage.from(bucketName).remove([uploaded.path])
+      return json(response, 500, { error: 'save_failed' })
+    }
+
+    return json(response, 200, {
+      profile: await withScalpPhotoUrls(adminClient, data),
+    })
+  }
+
+  if (action === 'remove-scalp-photo') {
+    const current = await loadCareProfile(adminClient, customerId)
+    if (current.error) {
+      return json(response, 500, { error: current.error })
+    }
+
+    const path = photoPath(request.body?.path, customerId)
+    const paths = Array.isArray(current.profile?.scalp_photos)
+      ? current.profile.scalp_photos
+      : []
+    if (!path || !paths.includes(path)) {
+      return json(response, 404, { error: 'photo_not_found' })
+    }
+
+    const { data, error } = await adminClient
+      .from('customer_care_profiles')
+      .update({
+        scalp_photos: paths.filter((item) => item !== path),
+        updated_by: profile.id,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('customer_id', customerId)
+      .select('*')
+      .single()
+
+    if (error || !data) {
+      return json(response, 500, { error: 'save_failed' })
+    }
+
+    await adminClient.storage.from(bucketName).remove([path])
+    return json(response, 200, {
+      profile: await withScalpPhotoUrls(adminClient, data),
+    })
+  }
+
   if (action === 'save-profile') {
     const { data, error } = await adminClient
       .from('customer_care_profiles')
@@ -287,7 +411,9 @@ export default async function handler(request, response) {
     if (error || !data) {
       return json(response, 500, { error: 'save_failed' })
     }
-    return json(response, 200, { profile: data })
+    return json(response, 200, {
+      profile: await withScalpPhotoUrls(adminClient, data),
+    })
   }
 
   if (action === 'save-record') {
