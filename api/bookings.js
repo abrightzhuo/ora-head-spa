@@ -862,6 +862,16 @@ async function manageAppointment(request, response) {
   const action = request.body?.action
   const appointmentId = String(request.body?.appointmentId ?? '')
   const customerId = String(request.body?.customerId ?? '')
+  const newCustomerName = String(request.body?.customerName ?? '')
+    .trim()
+    .slice(0, 100)
+  const newCustomerPhone = String(request.body?.customerPhone ?? '')
+    .trim()
+    .slice(0, 40)
+  const newCustomerEmail = String(request.body?.customerEmail ?? '')
+    .trim()
+    .toLowerCase()
+    .slice(0, 200)
   const serviceId = String(request.body?.serviceId ?? '')
   const providerId = String(request.body?.providerId ?? '')
   const startsAt = new Date(String(request.body?.startsAt ?? ''))
@@ -871,12 +881,28 @@ async function manageAppointment(request, response) {
   if (
     !['create_appointment', 'update_appointment'].includes(action) ||
     (isUpdate && !uuidPattern.test(appointmentId)) ||
-    (!isUpdate && !uuidPattern.test(customerId)) ||
     !uuidPattern.test(serviceId) ||
     !uuidPattern.test(providerId) ||
     Number.isNaN(startsAt.getTime())
   ) {
     return json(response, 400, { error: 'invalid_input' })
+  }
+
+  const creatingCustomer =
+    !isUpdate &&
+    !uuidPattern.test(customerId) &&
+    Boolean(newCustomerName || newCustomerPhone || newCustomerEmail)
+
+  if (
+    (!isUpdate && !uuidPattern.test(customerId) && !creatingCustomer) ||
+    (creatingCustomer &&
+      (newCustomerName.length < 1 ||
+        !phonePattern.test(newCustomerPhone) ||
+        (newCustomerEmail && !emailPattern.test(newCustomerEmail))))
+  ) {
+    return json(response, 400, {
+      error: creatingCustomer ? 'invalid_customer' : 'invalid_input',
+    })
   }
 
   const [
@@ -961,13 +987,38 @@ async function manageAppointment(request, response) {
       email: existing.customer_email,
       phone: existing.phone,
     }
-  } else {
+  } else if (uuidPattern.test(customerId)) {
     const customerResult = await adminClient
       .from('customers')
       .select('id, auth_user_id, name, email, phone')
       .eq('id', customerId)
       .single()
     customer = customerResult.data
+  } else {
+    const matchedCustomer = await adminClient
+      .from('customers')
+      .select('id, auth_user_id, name, email, phone')
+      .eq('phone', newCustomerPhone)
+      .order('created_at', { ascending: true })
+      .limit(1)
+      .maybeSingle()
+    customer = matchedCustomer.data
+
+    if (!customer) {
+      const createdCustomer = await adminClient
+        .from('customers')
+        .insert({
+          name: newCustomerName,
+          phone: newCustomerPhone,
+          email: newCustomerEmail || null,
+        })
+        .select('id, auth_user_id, name, email, phone')
+        .single()
+      if (createdCustomer.error || !createdCustomer.data) {
+        return json(response, 500, { error: 'customer_save_failed' })
+      }
+      customer = createdCustomer.data
+    }
   }
   if (!customer) {
     return json(response, 404, { error: 'customer_not_found' })

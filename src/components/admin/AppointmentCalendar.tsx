@@ -55,6 +55,8 @@ type Props = {
 
 type ViewMode = 'day' | 'week'
 
+const newCustomerOption = '__new_customer__'
+
 const statusOrder: Appointment['status'][] = [
   'pending',
   'checked_in',
@@ -114,6 +116,10 @@ export function AppointmentCalendar({
   )
   const [editing, setEditing] = useState<Appointment | 'new' | null>(null)
   const [customerId, setCustomerId] = useState('')
+  const [isNewCustomer, setIsNewCustomer] = useState(false)
+  const [newCustomerName, setNewCustomerName] = useState('')
+  const [newCustomerPhone, setNewCustomerPhone] = useState('')
+  const [newCustomerEmail, setNewCustomerEmail] = useState('')
   const [serviceId, setServiceId] = useState('')
   const [editProviderId, setEditProviderId] = useState('')
   const [startsAt, setStartsAt] = useState('')
@@ -122,6 +128,7 @@ export function AppointmentCalendar({
   const [saveError, setSaveError] = useState('')
   const labels = statusLabels[locale]
   const isStaff = currentProfile.role === 'staff'
+  const creatingCustomer = editing === 'new' && isNewCustomer
   const providers = staff.filter(
     (profile) => profile.active && profile.role === 'staff' && profile.bookable,
   )
@@ -175,6 +182,10 @@ export function AppointmentCalendar({
   const openForm = (appointment?: Appointment) => {
     setEditing(appointment ?? 'new')
     setCustomerId(appointment?.customer_id ?? customers[0]?.id ?? '')
+    setIsNewCustomer(!appointment && customers.length === 0)
+    setNewCustomerName('')
+    setNewCustomerPhone('')
+    setNewCustomerEmail('')
     setServiceId(appointment?.service_id ?? services[0]?.id ?? '')
     setEditProviderId(
       appointment?.provider_id ??
@@ -192,7 +203,18 @@ export function AppointmentCalendar({
 
   const saveAppointment = async () => {
     if (!editing || !serviceId || !editProviderId || !startsAt) return
-    if (editing === 'new' && !customerId) return
+    if (editing === 'new' && !creatingCustomer && !customerId) return
+    if (
+      creatingCustomer &&
+      (!newCustomerName.trim() || !newCustomerPhone.trim())
+    ) {
+      setSaveError(
+        locale === 'zh'
+          ? '请填写新客户的姓名和电话。'
+          : 'Enter a name and phone number for the new customer.',
+      )
+      return
+    }
     setSaving(true)
     setSaveError('')
     try {
@@ -206,7 +228,14 @@ export function AppointmentCalendar({
           action:
             editing === 'new' ? 'create_appointment' : 'update_appointment',
           appointmentId: editing === 'new' ? undefined : editing.id,
-          customerId: editing === 'new' ? customerId : undefined,
+          customerId:
+            editing === 'new' && !creatingCustomer ? customerId : undefined,
+          customerName: creatingCustomer ? newCustomerName.trim() : undefined,
+          customerPhone: creatingCustomer ? newCustomerPhone.trim() : undefined,
+          customerEmail:
+            creatingCustomer && newCustomerEmail.trim()
+              ? newCustomerEmail.trim()
+              : undefined,
           serviceId,
           providerId: editProviderId,
           startsAt: easternLocalDateTimeToIso(startsAt),
@@ -226,9 +255,17 @@ export function AppointmentCalendar({
           ? locale === 'zh'
             ? '该时间不可预约，请选择其他时间。'
             : 'That time is unavailable.'
-          : locale === 'zh'
-            ? '保存失败，请检查技师排班和项目设置。'
-            : 'Unable to save. Check provider schedule and service settings.',
+          : code === 'invalid_customer'
+            ? locale === 'zh'
+              ? '客户姓名或电话格式不正确，请检查后重试。'
+              : 'The customer name or phone number is invalid.'
+            : code === 'customer_save_failed'
+              ? locale === 'zh'
+                ? '新客户保存失败，请重试。'
+                : 'Unable to save the new customer. Please try again.'
+              : locale === 'zh'
+                ? '保存失败，请检查技师排班和项目设置。'
+                : 'Unable to save. Check provider schedule and service settings.',
       )
     } finally {
       setSaving(false)
@@ -335,16 +372,55 @@ export function AppointmentCalendar({
               <label>
                 <span>{locale === 'zh' ? '客户' : 'Customer'}</span>
                 <select
-                  value={customerId}
-                  onChange={(event) => setCustomerId(event.target.value)}
+                  value={isNewCustomer ? newCustomerOption : customerId}
+                  onChange={(event) => {
+                    if (event.target.value === newCustomerOption) {
+                      setIsNewCustomer(true)
+                      return
+                    }
+                    setIsNewCustomer(false)
+                    setCustomerId(event.target.value)
+                  }}
                 >
                   {customers.map((customer) => (
                     <option key={customer.id} value={customer.id}>
                       {customer.name} · {customer.phone}
                     </option>
                   ))}
+                  <option value={newCustomerOption}>
+                    {locale === 'zh' ? '＋ 新增客户' : '+ New customer'}
+                  </option>
                 </select>
               </label>
+            )}
+            {creatingCustomer && (
+              <>
+                <label>
+                  <span>{locale === 'zh' ? '客户姓名' : 'Customer name'}</span>
+                  <input
+                    value={newCustomerName}
+                    onChange={(event) => setNewCustomerName(event.target.value)}
+                    placeholder={locale === 'zh' ? '姓名' : 'Full name'}
+                  />
+                </label>
+                <label>
+                  <span>{locale === 'zh' ? '客户电话' : 'Customer phone'}</span>
+                  <input
+                    value={newCustomerPhone}
+                    onChange={(event) => setNewCustomerPhone(event.target.value)}
+                    placeholder="555-123-4567"
+                  />
+                </label>
+                <label>
+                  <span>{locale === 'zh' ? '客户邮箱（选填）' : 'Email (optional)'}</span>
+                  <input
+                    type="email"
+                    value={newCustomerEmail}
+                    onChange={(event) => setNewCustomerEmail(event.target.value)}
+                    placeholder="name@example.com"
+                  />
+                </label>
+              </>
             )}
             <label>
               <span>{locale === 'zh' ? '项目' : 'Service'}</span>
