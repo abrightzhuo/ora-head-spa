@@ -557,7 +557,8 @@ body.auth-modal-open {
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 86px;
+  /* 与固定头部实际高度（76px 内容 + 1px 描边）保持一致，避免露出上方深色 Hero */
+  scroll-padding-top: 77px;
 }
 
 body {
@@ -2416,10 +2417,6 @@ h2 {
 }
 
 @media (max-width: 767px) {
-  html {
-    scroll-padding-top: 68px;
-  }
-
   body {
     padding-bottom: calc(70px + env(safe-area-inset-bottom));
     background: var(--cream);
@@ -2446,6 +2443,10 @@ h2 {
 }
 
 @media (max-width: 1024px) {
+  html {
+    scroll-padding-top: 65px;
+  }
+
   .site-header {
     color: var(--ink);
     border-color: var(--line);

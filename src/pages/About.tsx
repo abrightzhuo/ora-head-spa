@@ -43,27 +43,27 @@ const chapterMedia: ChapterMedia[] = [
     },
   },
   {
-    image: '/images/interior-02.jpg',
+    image: '/images/about/medicine.jpg',
     alt: {
-      en: 'Herbal ingredients displayed along the ORA corridor',
-      zh: 'ORA 走廊中陈列的草本',
-      'zh-TW': 'ORA 走廊中陳列的草本',
+      en: 'Hands blending dried herbs and botanicals for an ORA herbal infusion',
+      zh: '手工调配 ORA 草本配方所用的草本与植物原料',
+      'zh-TW': '手工調配 ORA 草本配方所用的草本與植物原料',
     },
   },
   {
-    image: '/images/storefront.jpg',
+    image: '/images/about/brand-logo.jpg',
     alt: {
-      en: 'ORA Toucheer head spa storefront in Waltham',
-      zh: '位于 Waltham 的 ORA Toucheer 门店',
-      'zh-TW': '位於 Waltham 的 ORA Toucheer 門店',
+      en: 'ORA brand emblem: a leaf and profile motif above the ORA wordmark',
+      zh: 'ORA 品牌标识：叶片与侧脸构成的图形与 ORA 字标',
+      'zh-TW': 'ORA 品牌標識：葉片與側臉構成的圖形與 ORA 字標',
     },
   },
   {
-    image: '/images/interior-01.jpg',
+    image: '/images/about/treatment.jpg',
     alt: {
-      en: 'The ORA head spa treatment space in Waltham',
-      zh: 'ORA 位于 Waltham 的头疗空间',
-      'zh-TW': 'ORA 位於 Waltham 的頭療空間',
+      en: 'A guest relaxing during an ORA head spa ritual with a warm herbal rinse',
+      zh: '顾客在 ORA 头疗护理中放松，配合温热草本淋洗',
+      'zh-TW': '顧客在 ORA 頭療護理中放鬆，配合溫熱草本淋洗',
     },
   },
 ]

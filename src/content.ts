@@ -93,7 +93,6 @@ export const baseCopy: Record<'zh' | 'en', Copy> = {
       { label: '养护理念', href: '#philosophy' },
       { label: '护理项目', href: '#services' },
       { label: '疗愈空间', href: '#space' },
-      { label: '关于 ORA', href: '#about' },
     ],
     book: '预约体验',
     hero: {
@@ -217,7 +216,6 @@ export const baseCopy: Record<'zh' | 'en', Copy> = {
       { label: 'Philosophy', href: '#philosophy' },
       { label: 'Rituals', href: '#services' },
       { label: 'Our Space', href: '#space' },
-      { label: 'About ORA', href: '#about' },
     ],
     book: 'Book a Ritual',
     hero: {

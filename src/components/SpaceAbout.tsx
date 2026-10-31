@@ -54,40 +54,6 @@ export function SpaceGallery() {
   )
 }
 
-export function About() {
-  const locale = useSiteStore((state) => state.locale)
-  const t = copy[locale].about
-
-  return (
-    <section className="about section-shell" id="about">
-      <div className="about__visual observe-reveal">
-        <div className="about__image-wrap">
-          <img
-            src={images.logo}
-            alt={copy[locale].hero.eyebrow}
-            loading="lazy"
-          />
-        </div>
-        <div className="about__image-ring" aria-hidden="true" />
-      </div>
-      <div className="about__content observe-reveal">
-        <p className="eyebrow">{t.eyebrow}</p>
-        <h2>{t.title}</h2>
-        <p className="about__body">{t.body}</p>
-        <blockquote>{t.quote}</blockquote>
-        <div className="about__stats">
-          {t.stats.map((stat) => (
-            <div key={stat.label}>
-              <strong>{stat.value}</strong>
-              <span>{stat.label}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
-
 export function Testimonials() {
   const locale = useSiteStore((state) => state.locale)
   const t = copy[locale].testimonial

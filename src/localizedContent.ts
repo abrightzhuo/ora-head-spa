@@ -275,7 +275,7 @@ const packs: Record<Exclude<Locale, 'zh' | 'zh-TW' | 'en'>, { minute: string; da
   es: {
     minute: 'min',
     data: {
-      nav: ['Filosofía', 'Rituales', 'Nuestro espacio', 'Sobre ORA'],
+      nav: ['Filosofía', 'Rituales', 'Nuestro espacio'],
       book: 'Reservar',
       hero: ['Deja respirar el cuero cabelludo', 'Deja que cuerpo y mente bajen el ritmo', 'Cuidado herbal, técnicas profesionales y un espacio tranquilo para regalarte un momento verdaderamente tuyo.', 'Descubrir los rituales'],
       philosophy: ['El equilibrio natural comienza en la raíz', 'El cuidado del cuero cabelludo es más que limpieza: un ritual de tacto, respiración y ritmo que libera la tensión.', 'Pureza herbal', 'Extractos vegetales suaves que respetan tu ritmo natural.', 'Ritual personalizado', 'Escuchamos y observamos lo que necesitas hoy.', 'Relajación profunda', 'Gestos precisos para cabeza, cuello y hombros.', 'Cuidado continuo', 'Una experiencia que se convierte en bienestar duradero.'],
@@ -291,7 +291,7 @@ const packs: Record<Exclude<Locale, 'zh' | 'zh-TW' | 'en'>, { minute: string; da
   fr: {
     minute: 'min',
     data: {
-      nav: ['Philosophie', 'Rituels', 'Notre espace', 'À propos'],
+      nav: ['Philosophie', 'Rituels', 'Notre espace'],
       book: 'Réserver',
       hero: ['Laissez respirer votre cuir chevelu', 'Laissez le corps et l’esprit ralentir', 'Des soins botaniques, des gestes professionnels et un espace paisible pour un moment qui vous appartient.', 'Découvrir les rituels'],
       philosophy: ['L’équilibre naturel commence à la racine', 'Le soin du cuir chevelu va au-delà du nettoyage : un rituel de toucher, de respiration et de rythme.', 'Pureté botanique', 'Des extraits doux qui respectent votre rythme naturel.', 'Rituel personnalisé', 'Nous écoutons vos besoins du moment.', 'Détente profonde', 'Des gestes précis pour la tête, la nuque et les épaules.', 'Soin durable', 'Une expérience qui devient un art de vivre.'],
@@ -307,7 +307,7 @@ const packs: Record<Exclude<Locale, 'zh' | 'zh-TW' | 'en'>, { minute: string; da
   ja: {
     minute: '分',
     data: {
-      nav: ['ケア理念', 'トリートメント', '癒やしの空間', 'ORAについて'],
+      nav: ['ケア理念', 'トリートメント', '癒やしの空間'],
       book: '体験を予約',
       hero: ['頭皮から、深呼吸', '心と体を、ゆるやかに', '植物の恵み、確かな手技、静かな空間。自分自身に還るひとときを。', 'トリートメントを見る'],
       philosophy: ['頭皮から、自然なバランスを', 'スカルプケアは洗浄だけではありません。触れる感覚、呼吸、リズムを大切にする静かな儀式です。', '植物の力で浄化', '穏やかな植物由来成分で本来のリズムを尊重します。', '一人ひとりに合わせて', 'その日の状態に合うケアをご提案します。', '深いリラクゼーション', '頭部から首、肩の緊張を和らげます。', '続いていく健やかさ', '心地よさが続く習慣へつなげます。'],
@@ -323,7 +323,7 @@ const packs: Record<Exclude<Locale, 'zh' | 'zh-TW' | 'en'>, { minute: string; da
   ko: {
     minute: '분',
     data: {
-      nav: ['케어 철학', '트리트먼트', '힐링 공간', 'ORA 소개'],
+      nav: ['케어 철학', '트리트먼트', '힐링 공간'],
       book: '체험 예약',
       hero: ['두피부터 깊이 숨 쉬고', '몸과 마음은 천천히 쉬어갑니다', '식물의 힘, 전문적인 손길, 고요한 공간으로 온전히 나만의 시간을 선사합니다.', '트리트먼트 보기'],
       philosophy: ['두피부터 자연스러운 균형을', '두피 관리는 세정을 넘어 촉감과 호흡, 리듬을 느끼는 고요한 의식입니다.', '보태니컬 클렌징', '순한 식물 성분으로 본연의 리듬을 존중합니다.', '맞춤형 케어', '오늘의 상태에 꼭 맞는 케어를 제안합니다.', '깊은 이완', '머리와 목, 어깨의 긴장을 완화합니다.', '지속적인 관리', '한 번의 경험을 편안한 습관으로 이어갑니다.'],
@@ -339,7 +339,7 @@ const packs: Record<Exclude<Locale, 'zh' | 'zh-TW' | 'en'>, { minute: string; da
   de: {
     minute: 'Min.',
     data: {
-      nav: ['Philosophie', 'Behandlungen', 'Räume', 'Über ORA'],
+      nav: ['Philosophie', 'Behandlungen', 'Räume'],
       book: 'Ritual buchen',
       hero: ['Lassen Sie Ihre Kopfhaut durchatmen', 'Körper und Geist dürfen zur Ruhe kommen', 'Pflanzenpflege, fachkundige Berührung und ein stiller Raum schenken Ihnen Zeit nur für sich.', 'Behandlungen entdecken'],
       philosophy: ['Natürliches Gleichgewicht beginnt an der Wurzel', 'Kopfhautpflege ist mehr als Reinigung: ein Ritual aus Berührung, Atem und bewusstem Rhythmus.', 'Pflanzliche Reinheit', 'Sanfte Extrakte respektieren Ihren natürlichen Rhythmus.', 'Individuelles Ritual', 'Wir hören zu und stimmen die Pflege auf Sie ab.', 'Tiefe Entspannung', 'Präzise Griffe für Kopf, Nacken und Schultern.', 'Nachhaltige Pflege', 'Ein Erlebnis wird zu einer wohltuenden Gewohnheit.'],
@@ -355,7 +355,7 @@ const packs: Record<Exclude<Locale, 'zh' | 'zh-TW' | 'en'>, { minute: string; da
   ru: {
     minute: 'мин',
     data: {
-      nav: ['Философия', 'Процедуры', 'Пространство', 'Об ORA'],
+      nav: ['Философия', 'Процедуры', 'Пространство'],
       book: 'Записаться',
       hero: ['Позвольте коже головы дышать', 'Позвольте телу и разуму замедлиться', 'Растительный уход, профессиональные техники и тихое пространство — время только для Вас.', 'Смотреть процедуры'],
       philosophy: ['Естественный баланс начинается с корней', 'Уход за кожей головы — больше, чем очищение: это ритуал прикосновений, дыхания и спокойного ритма.', 'Растительное очищение', 'Мягкие экстракты поддерживают естественный ритм.', 'Индивидуальный подход', 'Мы подбираем уход под Ваше состояние.', 'Глубокое расслабление', 'Бережные техники для головы, шеи и плеч.', 'Продолжительный уход', 'Одно впечатление становится привычкой заботы о себе.'],

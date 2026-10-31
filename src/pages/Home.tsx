@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { About, SpaceGallery, Testimonials } from '../components/SpaceAbout'
+import { SpaceGallery, Testimonials } from '../components/SpaceAbout'
 import { BookingV2 } from '../components/BookingV2'
 import { Footer, MobileTabBar } from '../components/FooterMobile'
 import { Header } from '../components/Header'
@@ -51,7 +51,6 @@ export default function Home() {
       'philosophy',
       'services',
       'space',
-      'about',
       'booking',
     ])
     if (!validSections.has(sectionId)) return
@@ -86,7 +85,6 @@ export default function Home() {
             <Services />
             <Ritual />
             <SpaceGallery />
-            <About />
             <Testimonials />
             <BookingV2 />
           </>
