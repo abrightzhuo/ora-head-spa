@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { ArrowUpRight } from 'lucide-react'
 import { Footer } from '../components/FooterMobile'
 import { Header } from '../components/Header'
+import { isComingSoon } from '../lib/comingSoon'
 import { useSiteStore, type Locale } from '../store/useSiteStore'
 
 type Chapter = {
@@ -236,7 +237,7 @@ const aboutCopy: Partial<Record<Locale, AboutCopy>> = {
 export default function AboutPage() {
   const locale = useSiteStore((state) => state.locale)
   const t = aboutCopy[locale] ?? english
-  const bookHref = `/?lang=${locale}#booking`
+  const bookHref = `${isComingSoon() ? '/preview' : '/'}?lang=${locale}#booking`
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -256,7 +257,7 @@ export default function AboutPage() {
 
   return (
     <main className="about-page">
-      <Header actionHref={bookHref} returnToHome />
+      <Header actionHref={bookHref} returnToHome showFullNavigation />
 
       <section className="about-page__hero">
         <img src="/images/about/story-hero.jpg" alt="" />

@@ -75,6 +75,7 @@ type HeaderProps = {
   actionHref?: string
   actionLabel?: string
   returnToHome?: boolean
+  showFullNavigation?: boolean
 }
 
 function LanguageSwitch() {
@@ -125,9 +126,10 @@ export function Header({
   actionHref = '#booking',
   actionLabel,
   returnToHome = false,
+  showFullNavigation = false,
 }: HeaderProps = {}) {
   const locale = useSiteStore((state) => state.locale)
-  const comingSoon = isComingSoon()
+  const comingSoon = isComingSoon() && !showFullNavigation
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const t = copy[locale]
@@ -148,9 +150,10 @@ export function Header({
   }, [menuOpen])
 
   const closeMenu = () => setMenuOpen(false)
-  const homeHref = returnToHome ? `/?lang=${locale}` : '#home'
+  const siteBase = isComingSoon() ? '/preview' : '/'
+  const homeHref = returnToHome ? `${siteBase}?lang=${locale}` : '#home'
   const sectionHref = (href: string) =>
-    returnToHome ? `/?lang=${locale}${href}` : href
+    returnToHome ? `${siteBase}?lang=${locale}${href}` : href
   const openBooking = () => {
     if (!returnToHome) {
       window.dispatchEvent(new Event('ora:open-booking'))

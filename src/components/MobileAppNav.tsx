@@ -5,6 +5,7 @@ import {
   Sparkles,
   UserRound,
 } from 'lucide-react'
+import { isComingSoon } from '../lib/comingSoon'
 import { useSiteStore, type Locale } from '../store/useSiteStore'
 
 const labels: Record<
@@ -34,18 +35,19 @@ export function MobileAppNav() {
   const path = window.location.pathname
   const hash = window.location.hash
   const localeQuery = `lang=${encodeURIComponent(locale)}`
+  const siteBase = isComingSoon() ? '/preview' : '/'
   const items = [
     {
-      href: `/?${localeQuery}`,
+      href: `${siteBase}?${localeQuery}`,
       label: t.home,
       icon: Home,
-      active: path === '/' && hash !== '#booking',
+      active: path === siteBase && hash !== '#booking',
     },
     {
-      href: `/?${localeQuery}#booking`,
+      href: `${siteBase}?${localeQuery}#booking`,
       label: t.book,
       icon: CalendarDays,
-      active: path === '/' && hash === '#booking',
+      active: path === siteBase && hash === '#booking',
     },
     {
       href: `/membership?${localeQuery}`,
