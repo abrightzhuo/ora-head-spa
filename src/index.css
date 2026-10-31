@@ -8639,3 +8639,52 @@ html[data-coming-soon='true'] .hero {
     gap: 22px 32px;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Language-aware display scale.
+   English sizes are the reference. CJK glyphs are full-width, and some
+   European strings run longer, so the same pixel size looks larger and wraps
+   onto extra lines. Scale those locales down to keep the English layout.
+--------------------------------------------------------------------------- */
+html:is(:lang(zh), :lang(ja), :lang(ko)) .hero h1 {
+  max-width: 1020px;
+  font-size: clamp(46px, 5.6vw, 82px);
+  line-height: 1.14;
+  letter-spacing: 0.008em;
+}
+
+html:is(:lang(zh), :lang(ja), :lang(ko)) .hero h1 em {
+  margin-top: 0.16em;
+  margin-left: 0.5em;
+}
+
+html:is(:lang(es), :lang(fr), :lang(de), :lang(ru)) .hero h1 {
+  max-width: 960px;
+  font-size: clamp(48px, 5.9vw, 86px);
+  line-height: 0.92;
+}
+
+html:is(:lang(zh), :lang(ja), :lang(ko))
+  :is(.philosophy__intro, .services__heading, .ritual__heading, .space-section__heading, .about__content, .testimonials__heading, .booking__content)
+  h2 {
+  font-size: clamp(38px, 4vw, 62px);
+  line-height: 1.22;
+  letter-spacing: 0.01em;
+}
+
+html:is(:lang(es), :lang(fr), :lang(de), :lang(ru))
+  :is(.philosophy__intro, .services__heading, .ritual__heading, .space-section__heading, .about__content, .testimonials__heading, .booking__content)
+  h2 {
+  font-size: clamp(36px, 4.4vw, 64px);
+  line-height: 1.08;
+}
+
+/* Korean wraps between eojeol, never inside a word. */
+html:lang(ko) :is(h1, h2, h3) {
+  word-break: keep-all;
+}
+
+/* Japanese headings should not break before small kana or closing brackets. */
+html:lang(ja) :is(h1, h2, h3) {
+  line-break: strict;
+}
