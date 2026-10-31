@@ -1,5 +1,5 @@
 import { CalendarDays, Home, Sparkles, type LucideIcon } from 'lucide-react'
-import { isComingSoon } from '../lib/comingSoon'
+import { siteHomePath } from '../lib/comingSoon'
 import { copy } from '../localizedContent'
 import { useSiteStore, type Locale } from '../store/useSiteStore'
 import { BrandMark } from './BrandMark'
@@ -19,7 +19,7 @@ const mobileNavigationLabel: Record<Locale, string> = {
 export function Footer() {
   const locale = useSiteStore((state) => state.locale)
   const t = copy[locale]
-  const siteBase = isComingSoon() ? '/preview' : '/'
+  const siteBase = siteHomePath()
   const sectionHref = (href: string) =>
     window.location.pathname === siteBase
       ? href

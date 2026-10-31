@@ -6,3 +6,12 @@ export function isComingSoon() {
   if (typeof document === 'undefined') return false
   return document.documentElement.dataset.comingSoon === 'true'
 }
+
+/**
+ * While the root page is still the coming-soon landing page, the complete site
+ * lives at /preview (index-bak.html). All "back home" style links go there so
+ * visitors are not dropped onto the landing page.
+ */
+export function siteHomePath() {
+  return isComingSoon() ? '/preview' : '/'
+}

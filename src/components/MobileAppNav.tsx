@@ -5,7 +5,7 @@ import {
   Sparkles,
   UserRound,
 } from 'lucide-react'
-import { isComingSoon } from '../lib/comingSoon'
+import { siteHomePath } from '../lib/comingSoon'
 import { useSiteStore, type Locale } from '../store/useSiteStore'
 
 const labels: Record<
@@ -35,7 +35,7 @@ export function MobileAppNav() {
   const path = window.location.pathname
   const hash = window.location.hash
   const localeQuery = `lang=${encodeURIComponent(locale)}`
-  const siteBase = isComingSoon() ? '/preview' : '/'
+  const siteBase = siteHomePath()
   const items = [
     {
       href: `${siteBase}?${localeQuery}`,

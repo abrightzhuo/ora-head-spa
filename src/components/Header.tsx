@@ -10,7 +10,7 @@ import {
 } from 'lucide-react'
 import { useCustomerAuth } from '../contexts/customerAuth'
 import { customerCopy } from '../customerCopy'
-import { isComingSoon } from '../lib/comingSoon'
+import { isComingSoon, siteHomePath } from '../lib/comingSoon'
 import { copy } from '../localizedContent'
 import {
   localeLabels,
@@ -75,7 +75,6 @@ type HeaderProps = {
   actionHref?: string
   actionLabel?: string
   returnToHome?: boolean
-  showFullNavigation?: boolean
 }
 
 function LanguageSwitch() {
@@ -126,10 +125,11 @@ export function Header({
   actionHref = '#booking',
   actionLabel,
   returnToHome = false,
-  showFullNavigation = false,
 }: HeaderProps = {}) {
   const locale = useSiteStore((state) => state.locale)
-  const comingSoon = isComingSoon() && !showFullNavigation
+  // The coming-soon landing page hides navigation, but every sub-page keeps
+  // the full header so guests can still move around the site.
+  const comingSoon = isComingSoon() && window.location.pathname === '/'
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const t = copy[locale]
@@ -150,7 +150,7 @@ export function Header({
   }, [menuOpen])
 
   const closeMenu = () => setMenuOpen(false)
-  const siteBase = isComingSoon() ? '/preview' : '/'
+  const siteBase = siteHomePath()
   const homeHref = returnToHome ? `${siteBase}?lang=${locale}` : '#home'
   const sectionHref = (href: string) =>
     returnToHome ? `${siteBase}?lang=${locale}${href}` : href

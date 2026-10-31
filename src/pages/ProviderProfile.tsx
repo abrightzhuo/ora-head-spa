@@ -1,5 +1,6 @@
 import { ArrowLeft, Award, CalendarDays, Languages } from 'lucide-react'
 import { BrandMark } from '../components/BrandMark'
+import { siteHomePath } from '../lib/comingSoon'
 import {
   providerTranslation,
   useBookingCatalog,
@@ -74,7 +75,7 @@ export default function ProviderProfile({ providerId }: Props) {
   if (services.some((service) => service.id === requestedServiceId)) {
     bookingParams.set('service', requestedServiceId)
   }
-  const bookingHref = `/?${bookingParams.toString()}#booking`
+  const bookingHref = `${siteHomePath()}?${bookingParams.toString()}#booking`
 
   return (
     <main className="provider-profile-page">
