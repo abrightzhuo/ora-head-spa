@@ -18,6 +18,8 @@ const mobileNavigationLabel: Record<Locale, string> = {
 export function Footer() {
   const locale = useSiteStore((state) => state.locale)
   const t = copy[locale]
+  const sectionHref = (href: string) =>
+    window.location.pathname === '/' ? href : `/?lang=${locale}${href}`
 
   return (
     <footer className="footer">
@@ -25,7 +27,11 @@ export function Footer() {
         <BrandMark light />
         <p>{t.footer.statement}</p>
         <div className="footer__links">
-          {t.nav.map((item) => <a href={item.href} key={item.href}>{item.label}</a>)}
+          {t.nav.map((item) => (
+            <a href={sectionHref(item.href)} key={item.href}>
+              {item.label}
+            </a>
+          ))}
         </div>
         <small>{t.footer.rights}</small>
       </div>
