@@ -222,7 +222,7 @@ export const baseCopy: Record<'zh' | 'en', Copy> = {
       eyebrow: 'HERBAL SCALP & SKIN WELLNESS',
       title: 'Breathe at the roots.',
       italic: 'Return to your rhythm.',
-      description: 'Botanical care, considered touch and a quiet space created for the pause you have been needing.',
+      description: 'Botanical care, professional head spa and a quiet space created for the pause you have been needing.',
       explore: 'Explore rituals',
       note: 'NOURISH · RESTORE · RENEW',
     },
