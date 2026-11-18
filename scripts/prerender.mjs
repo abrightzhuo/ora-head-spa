@@ -68,6 +68,23 @@ const launchBrowser = async () => {
     return puppeteer.launch({ headless: true, executablePath: systemChrome, args: CHROME_ARGS })
   }
 
+  // CI / Vercel：npm 会拦截 puppeteer 的 postinstall，自带的 Chromium 并不存在，
+  // 因此优先使用 @sparticuz/chromium 提供的可执行文件（构建时解压到 /tmp）。
+  try {
+    const { default: chromium } = await import('@sparticuz/chromium')
+    const executablePath = await chromium.executablePath()
+    if (executablePath) {
+      log(`使用 @sparticuz/chromium：${executablePath}`)
+      return await puppeteer.launch({
+        headless: true,
+        executablePath,
+        args: [...CHROME_ARGS, ...chromium.args],
+      })
+    }
+  } catch (error) {
+    log(`@sparticuz/chromium 不可用：${error.message}`)
+  }
+
   try {
     return await puppeteer.launch({ headless: true, args: CHROME_ARGS })
   } catch {
