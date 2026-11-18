@@ -97,9 +97,10 @@ export const baseCopy: Record<'zh' | 'en', Copy> = {
     book: '预约体验',
     hero: {
       eyebrow: '草本头皮与肌肤养护',
-      title: '让头皮深呼吸',
-      italic: '让身心慢下来',
-      description: '以草本养护、专业手法与安静空间，为每一次到店留出一段真正属于自己的时间。',
+      title: '放松 清爽 焕新',
+      italic: '在根源处深呼吸\n重新遇见自己',
+      description:
+        '忙碌一天里的一段安静时光。走进 ORA Toucheer 头疗空间，闭上眼睛，让肩膀自然下沉，把一天的匆忙留在门外。温和的草本头皮护理，加上一处可以安放身心的安静空间，让你深呼吸，松开一天的紧绷。',
       explore: '探索护理',
       note: '滋养 · 修护 · 焕新',
     },
@@ -220,9 +221,10 @@ export const baseCopy: Record<'zh' | 'en', Copy> = {
     book: 'Book a Ritual',
     hero: {
       eyebrow: 'HERBAL SCALP & SKIN WELLNESS',
-      title: 'Breathe at the roots.',
-      italic: 'Return to your rhythm.',
-      description: 'Botanical care, professional head spa and a quiet space created for the pause you have been needing.',
+      title: 'Relax Refresh Renew',
+      italic: 'Breathe at the roots\nand find yourself again',
+      description:
+        'A quiet pause in a busy day. At ORA Toucheer Head Spa, take a moment to close your eyes, let your shoulders drop, and leave the rush of the day at the door. With gentle botanical scalp care, and a quiet space to rest, you can take a breath and let the tension of the day ease.',
       explore: 'Explore rituals',
       note: 'NOURISH · RESTORE · RENEW',
     },

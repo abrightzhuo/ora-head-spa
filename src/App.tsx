@@ -23,7 +23,7 @@ const metadata: Record<
 > = {
     zh: { home: 'ORA | 草本头皮与肌肤养护', about: 'ORA 品牌故事', giftCards: 'ORA 礼品卡', membership: 'ORA 年度会员', provider: 'ORA 专业头疗技师', account: '我的 ORA', description: 'ORA 以草本养护、专业手法和安静空间，为您带来专属的头皮与身心放松体验。' },
     'zh-TW': { home: 'ORA | 草本頭皮與肌膚養護', about: 'ORA 品牌故事', giftCards: 'ORA 禮品卡', membership: 'ORA 年度會員', provider: 'ORA 專業頭療技師', account: '我的 ORA', description: 'ORA 以草本養護、專業手法和安靜空間，為您帶來專屬的頭皮與身心放鬆體驗。' },
-    en: { home: 'ORA | Herbal Scalp & Skin Wellness', about: 'Our Story | ORA', giftCards: 'ORA Gift Cards', membership: 'ORA Annual Membership', provider: 'ORA Head Spa Provider', account: 'My ORA', description: 'ORA combines botanical scalp care, professional head spa and a quiet space for restorative wellbeing.' },
+    en: { home: 'ORA Head Spa | Herbal Scalp & Skin Care in Waltham, MA', about: 'Our Story | ORA Head Spa, Waltham MA', giftCards: 'ORA Gift Cards', membership: 'ORA Annual Membership', provider: 'ORA Head Spa Provider', account: 'My ORA', description: 'ORA is a herbal head spa in Waltham, Massachusetts. Botanical scalp and skin rituals, one-to-one care and a quiet space — choose a 60–90 minute session and book online.' },
     es: { home: 'ORA | Bienestar herbal para cuero cabelludo y piel', about: 'Nuestra historia | ORA', giftCards: 'Tarjetas regalo ORA', membership: 'Membresía anual ORA', provider: 'Especialistas ORA en spa capilar', account: 'Mi ORA', description: 'ORA combina cuidado herbal, técnicas profesionales y un espacio tranquilo para el bienestar del cuero cabelludo.' },
     fr: { home: 'ORA | Bien-être végétal du cuir chevelu et de la peau', about: 'Notre histoire | ORA', giftCards: 'Cartes cadeaux ORA', membership: 'Adhésion annuelle ORA', provider: 'Spécialistes ORA du spa capillaire', account: 'Mon ORA', description: 'ORA associe soins végétaux, gestes professionnels et espace apaisant pour le bien-être du cuir chevelu.' },
     ja: { home: 'ORA | 植物の恵みによる頭皮と肌のウェルネス', about: 'ORAのものがたり', giftCards: 'ORA ギフトカード', membership: 'ORA 年間メンバーシップ', provider: 'ORA ヘッドスパ担当', account: 'My ORA', description: 'ORAは植物由来の頭皮ケア、専門的な手技、静かな空間で心身を整える時間をお届けします。' },
@@ -38,7 +38,7 @@ export default function App() {
 
   useEffect(() => {
     const current = metadata[locale]
-    document.title =
+    const title =
       path === '/about'
         ? current.about
         : path === '/gift-cards'
@@ -50,9 +50,32 @@ export default function App() {
           : path.startsWith('/providers/')
             ? current.provider
             : current.home
-    document
-      .querySelector('meta[name="description"]')
-      ?.setAttribute('content', current.description)
+    document.title = title
+
+    const setMeta = (attr: 'name' | 'property', key: string, value: string) => {
+      let tag = document.head.querySelector<HTMLMetaElement>(`meta[${attr}="${key}"]`)
+      if (!tag) {
+        tag = document.createElement('meta')
+        tag.setAttribute(attr, key)
+        document.head.appendChild(tag)
+      }
+      tag.setAttribute('content', value)
+    }
+
+    setMeta('name', 'description', current.description)
+    setMeta('property', 'og:title', title)
+    setMeta('property', 'og:description', current.description)
+    setMeta('property', 'og:url', `${window.location.origin}${path}`)
+    setMeta('name', 'twitter:title', title)
+    setMeta('name', 'twitter:description', current.description)
+
+    let canonical = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]')
+    if (!canonical) {
+      canonical = document.createElement('link')
+      canonical.rel = 'canonical'
+      document.head.appendChild(canonical)
+    }
+    canonical.href = `${window.location.origin}${path}`
   }, [locale, path])
 
   const page =

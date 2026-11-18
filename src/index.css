@@ -8587,10 +8587,17 @@ html[data-coming-soon='true'] .hero {
 
 .about-closing__visual::after {
   position: absolute;
+  /* 多级停靠点让 42% 处的转折平滑过渡，避免出现一条竖向亮带 */
   background: linear-gradient(
     90deg,
     var(--night) 0%,
-    rgba(28, 26, 22, 0.24) 42%,
+    rgba(28, 26, 22, 0.80) 10%,
+    rgba(28, 26, 22, 0.55) 20%,
+    rgba(28, 26, 22, 0.37) 30%,
+    rgba(28, 26, 22, 0.27) 42%,
+    rgba(28, 26, 22, 0.26) 54%,
+    rgba(28, 26, 22, 0.31) 72%,
+    rgba(28, 26, 22, 0.37) 88%,
     rgba(28, 26, 22, 0.42) 100%
   );
   content: '';
@@ -8659,10 +8666,59 @@ html:is(:lang(zh), :lang(ja), :lang(ko)) .hero h1 em {
   margin-left: 0.5em;
 }
 
+/* 英文主视觉文案更长：主行锁定单行，副行按内容中的换行点固定为两行并略小一号 */
+@media (min-width: 768px) {
+  html:lang(en) .hero h1 {
+    max-width: 1000px;
+  }
+
+  html:lang(en) .hero h1 span {
+    white-space: nowrap;
+  }
+
+  /* 各语言主/副标题按文案中的换行点断行（英文主标题另由 nowrap 锁定单行） */
+  .hero h1 span {
+    white-space: pre-line;
+  }
+
+  /* 各语言副标题统一略小于主标题，并固定为两行 */
+  .hero h1 em {
+    font-size: 0.85em;
+    white-space: pre-line;
+  }
+
+  html:lang(en) .hero h1 em {
+    line-height: 0.95;
+  }
+
+  /* 描述文案整体变长（各语言同步），放宽栏宽，与标题区同宽 */
+  .hero__description {
+    max-width: 880px;
+  }
+}
+
 html:is(:lang(es), :lang(fr), :lang(de), :lang(ru)) .hero h1 {
   max-width: 960px;
   font-size: clamp(48px, 5.9vw, 86px);
   line-height: 0.92;
+}
+
+/* 法语 / 日语 / 俄语主标题文案更长：单独收小字号并放宽单行宽度，保证主标题不折行 */
+@media (min-width: 768px) {
+  html:lang(fr) .hero h1 {
+    max-width: 1020px;
+    font-size: clamp(44px, 5.7vw, 83px);
+  }
+
+  html:lang(ja) .hero h1 {
+    max-width: 1060px;
+    font-size: clamp(42px, 5.3vw, 76px);
+  }
+
+  html:lang(ru) .hero h1 {
+    max-width: 1060px;
+    font-size: clamp(42px, 5.3vw, 76px);
+  }
 }
 
 html:is(:lang(zh), :lang(ja), :lang(ko))

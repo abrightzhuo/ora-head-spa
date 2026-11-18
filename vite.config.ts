@@ -29,7 +29,7 @@ const sitePreviewRoutes = (): Plugin => ({
 })
 
 // https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({ command }) => ({
   build: {
     sourcemap: 'hidden',
     rollupOptions: {
@@ -52,11 +52,11 @@ export default defineConfig({
     sitePreviewRoutes(),
     react({
       babel: {
-        plugins: [
-          'react-dev-locator',
-        ],
+        // react-dev-locator 只在开发时使用：它会给每个 DOM 节点写上
+        // trae-inspector-* 属性（含本机绝对路径），生产构建与预渲染产物都不能带。
+        plugins: command === 'serve' ? ['react-dev-locator'] : [],
       },
     }),
     tsconfigPaths()
   ],
-})
+}))

@@ -277,7 +277,7 @@ const packs: Record<Exclude<Locale, 'zh' | 'zh-TW' | 'en'>, { minute: string; da
     data: {
       nav: ['Filosofía', 'Rituales', 'Nuestro espacio'],
       book: 'Reservar',
-      hero: ['Deja respirar el cuero cabelludo', 'Deja que cuerpo y mente bajen el ritmo', 'Cuidado herbal, técnicas profesionales y un espacio tranquilo para regalarte un momento verdaderamente tuyo.', 'Descubrir los rituales'],
+      hero: ['Relájate Refréscate Renueva', 'Respira en la raíz\ny vuelve a encontrarte', 'Una pausa tranquila en un día ajetreado. En ORA Toucheer Head Spa, tómate un momento para cerrar los ojos, dejar caer los hombros y dejar en la puerta las prisas del día. Con un cuidado herbal y suave del cuero cabelludo y un espacio tranquilo donde descansar, puedes respirar hondo y soltar la tensión acumulada.', 'Descubrir los rituales'],
       philosophy: ['El equilibrio natural comienza en la raíz', 'El cuidado del cuero cabelludo es más que limpieza: un ritual de tacto, respiración y ritmo que libera la tensión.', 'Pureza herbal', 'Extractos vegetales suaves que respetan tu ritmo natural.', 'Ritual personalizado', 'Escuchamos y observamos lo que necesitas hoy.', 'Relajación profunda', 'Gestos precisos para cabeza, cuello y hombros.', 'Cuidado continuo', 'Una experiencia que se convierte en bienestar duradero.'],
       services: ['Tres ritmos, una misma calma', 'Cada ritual comienza con una conversación tranquila. Elige la sensación que necesitas hoy.', 'Pureza y calma', 'Limpieza ligera para cuero cabelludo con grasa o residuos.', 'Renovación vital', 'Limpieza y nutrición para un cabello suave, ligero y brillante.', 'Quietud profunda', 'Relajación prolongada desde la cabeza hasta los hombros.', 'Elegir este ritual'],
       ritual: ['Un ritual para los cinco sentidos', 'Consulta tranquila', 'Conocemos tus hábitos y cómo te sientes.', 'Observación', 'Examinamos el cuero cabelludo y el cabello.', 'Limpieza herbal', 'Una limpieza suave y refrescante.', 'Técnicas relajantes', 'Relajación de cabeza, cuello y hombros.', 'Reposo renovador', 'Vuelve a ti entre calidez y aromas.'],
@@ -293,7 +293,7 @@ const packs: Record<Exclude<Locale, 'zh' | 'zh-TW' | 'en'>, { minute: string; da
     data: {
       nav: ['Philosophie', 'Rituels', 'Notre espace'],
       book: 'Réserver',
-      hero: ['Laissez respirer votre cuir chevelu', 'Laissez le corps et l’esprit ralentir', 'Des soins botaniques, des gestes professionnels et un espace paisible pour un moment qui vous appartient.', 'Découvrir les rituels'],
+      hero: ['Relâchez Rafraîchissez Renouvelez', 'Respirez à la racine\net retrouvez-vous', 'Une pause paisible dans une journée chargée. Chez ORA Toucheer Head Spa, prenez un instant pour fermer les yeux, laisser vos épaules descendre et déposer l’agitation du jour à la porte. Avec un soin botanique tout en douceur du cuir chevelu et un espace calme pour vous reposer, vous pouvez respirer et laisser retomber la tension de la journée.', 'Découvrir les rituels'],
       philosophy: ['L’équilibre naturel commence à la racine', 'Le soin du cuir chevelu va au-delà du nettoyage : un rituel de toucher, de respiration et de rythme.', 'Pureté botanique', 'Des extraits doux qui respectent votre rythme naturel.', 'Rituel personnalisé', 'Nous écoutons vos besoins du moment.', 'Détente profonde', 'Des gestes précis pour la tête, la nuque et les épaules.', 'Soin durable', 'Une expérience qui devient un art de vivre.'],
       services: ['Trois rythmes, une même détente', 'Chaque rituel commence par un échange en douceur. Choisissez la sensation dont vous avez besoin.', 'Pureté apaisante', 'Un nettoyage léger pour éliminer sébum et résidus.', 'Éclat revitalisant', 'Nettoyage et nutrition pour des cheveux doux et brillants.', 'Quiétude profonde', 'Une relaxation prolongée de la tête aux épaules.', 'Choisir ce rituel'],
       ritual: ['Un rituel pour les cinq sens', 'Échange en douceur', 'Nous découvrons vos habitudes et votre ressenti.', 'Observation', 'Nous examinons le cuir chevelu et les cheveux.', 'Nettoyage botanique', 'Un nettoyage doux et rafraîchissant.', 'Gestes apaisants', 'Détente de la tête à la nuque et aux épaules.', 'Repos régénérant', 'Revenez à vous dans la chaleur et les parfums.'],
@@ -309,7 +309,7 @@ const packs: Record<Exclude<Locale, 'zh' | 'zh-TW' | 'en'>, { minute: string; da
     data: {
       nav: ['ケア理念', 'トリートメント', '癒やしの空間'],
       book: '体験を予約',
-      hero: ['頭皮から、深呼吸', '心と体を、ゆるやかに', '植物の恵み、確かな手技、静かな空間。自分自身に還るひとときを。', 'トリートメントを見る'],
+      hero: ['ゆるめる 整える 生まれ変わる', '根元で深呼吸して\nもう一度自分に出会う', '忙しい一日のなかの、静かなひととき。ORA Toucheer Head Spa で、少しのあいだ目を閉じ、肩の力を抜いて、一日の慌ただしさをドアの外に置いてください。やさしい植物の頭皮ケアと、休息のための静かな空間が、深い呼吸とともに一日の緊張をほどいていきます。', 'トリートメントを見る'],
       philosophy: ['頭皮から、自然なバランスを', 'スカルプケアは洗浄だけではありません。触れる感覚、呼吸、リズムを大切にする静かな儀式です。', '植物の力で浄化', '穏やかな植物由来成分で本来のリズムを尊重します。', '一人ひとりに合わせて', 'その日の状態に合うケアをご提案します。', '深いリラクゼーション', '頭部から首、肩の緊張を和らげます。', '続いていく健やかさ', '心地よさが続く習慣へつなげます。'],
       services: ['3つのリズム、ひとつの安らぎ', 'やさしいカウンセリングから始め、今求める感覚をお選びください。', 'ピュアリセット', '皮脂や残留物を穏やかに洗い流し、軽やかに。', 'バイタルグロウ', '洗浄とうるおいケアで、やわらかな艶髪へ。', 'ディープスティルネス', '頭部から肩まで、ゆったり深く解きほぐします。', 'このコースを選ぶ'],
       ritual: ['五感を満たす、ひとつの儀式', 'カウンセリング', '習慣と今日の状態を伺います。', '頭皮チェック', '頭皮と髪を丁寧に確認します。', '植物の力で浄化', '穏やかに洗い上げます。', '心地よい手技', '頭部から肩へ深くリラックス。', '静かな休息', 'ぬくもりと香りに包まれます。'],
@@ -325,7 +325,7 @@ const packs: Record<Exclude<Locale, 'zh' | 'zh-TW' | 'en'>, { minute: string; da
     data: {
       nav: ['케어 철학', '트리트먼트', '힐링 공간'],
       book: '체험 예약',
-      hero: ['두피부터 깊이 숨 쉬고', '몸과 마음은 천천히 쉬어갑니다', '식물의 힘, 전문적인 손길, 고요한 공간으로 온전히 나만의 시간을 선사합니다.', '트리트먼트 보기'],
+      hero: ['쉼 상쾌함 재생', '뿌리에서 숨 쉬고\n다시 나를 만나다', '바쁜 하루 속의 조용한 쉼. ORA Toucheer Head Spa에서 잠시 눈을 감고 어깨의 힘을 빼며, 하루의 분주함은 문밖에 두세요. 부드러운 보태니컬 두피 케어와 쉼을 위한 고요한 공간이 깊은 숨과 함께 하루의 긴장을 풀어드립니다.', '트리트먼트 보기'],
       philosophy: ['두피부터 자연스러운 균형을', '두피 관리는 세정을 넘어 촉감과 호흡, 리듬을 느끼는 고요한 의식입니다.', '보태니컬 클렌징', '순한 식물 성분으로 본연의 리듬을 존중합니다.', '맞춤형 케어', '오늘의 상태에 꼭 맞는 케어를 제안합니다.', '깊은 이완', '머리와 목, 어깨의 긴장을 완화합니다.', '지속적인 관리', '한 번의 경험을 편안한 습관으로 이어갑니다.'],
       services: ['세 가지 리듬, 하나의 온전한 쉼', '편안한 상담으로 시작해 지금 필요한 감각을 선택합니다.', '퓨어 리셋', '피지와 잔여물을 부드럽게 씻어 산뜻하게.', '바이탈 글로우', '세정과 영양 케어로 부드럽고 윤기 있게.', '딥 스틸니스', '머리부터 어깨까지 여유롭게 깊은 이완을.', '이 코스 선택'],
       ritual: ['오감을 채우는 온전한 리추얼', '편안한 상담', '습관과 지금의 상태를 살핍니다.', '두피 확인', '두피와 모발을 세심하게 확인합니다.', '보태니컬 클렌징', '부드럽고 산뜻하게 세정합니다.', '릴랙싱 테크닉', '머리부터 어깨까지 이완합니다.', '고요한 회복', '따뜻함과 향기 속에서 회복합니다.'],
@@ -341,7 +341,7 @@ const packs: Record<Exclude<Locale, 'zh' | 'zh-TW' | 'en'>, { minute: string; da
     data: {
       nav: ['Philosophie', 'Behandlungen', 'Räume'],
       book: 'Ritual buchen',
-      hero: ['Lassen Sie Ihre Kopfhaut durchatmen', 'Körper und Geist dürfen zur Ruhe kommen', 'Pflanzenpflege, fachkundige Berührung und ein stiller Raum schenken Ihnen Zeit nur für sich.', 'Behandlungen entdecken'],
+      hero: ['Entspannen Erfrischen Erneuern', 'An der Wurzel atmen\nund sich selbst wiederfinden', 'Eine stille Pause in einem vollen Tag. Bei ORA Toucheer Head Spa nehmen Sie sich einen Moment Zeit: Augen schließen, Schultern sinken lassen und die Eile des Tages vor der Tür lassen. Mit sanfter pflanzlicher Kopfhautpflege und einem ruhigen Raum zum Ausruhen können Sie durchatmen und die Anspannung des Tages loslassen.', 'Behandlungen entdecken'],
       philosophy: ['Natürliches Gleichgewicht beginnt an der Wurzel', 'Kopfhautpflege ist mehr als Reinigung: ein Ritual aus Berührung, Atem und bewusstem Rhythmus.', 'Pflanzliche Reinheit', 'Sanfte Extrakte respektieren Ihren natürlichen Rhythmus.', 'Individuelles Ritual', 'Wir hören zu und stimmen die Pflege auf Sie ab.', 'Tiefe Entspannung', 'Präzise Griffe für Kopf, Nacken und Schultern.', 'Nachhaltige Pflege', 'Ein Erlebnis wird zu einer wohltuenden Gewohnheit.'],
       services: ['Drei Rhythmen. Ein Gefühl der Ruhe.', 'Jede Behandlung beginnt mit einem behutsamen Gespräch. Wählen Sie, was Sie heute brauchen.', 'Klärende Entspannung', 'Sanfte Reinigung bei Talg und Stylingrückständen.', 'Neue Vitalität', 'Reinigung und Pflege für weiches, glänzendes Haar.', 'Tiefe Stille', 'Lange Entspannung vom Kopf bis zu den Schultern.', 'Dieses Ritual wählen'],
       ritual: ['Ein Ritual für alle fünf Sinne', 'Behutsames Gespräch', 'Wir erfahren mehr über Ihr Befinden.', 'Kopfhautanalyse', 'Wir betrachten Kopfhaut und Haar.', 'Pflanzliche Reinigung', 'Sanft gereinigt und erfrischt.', 'Beruhigende Griffe', 'Entspannung von Kopf bis Schultern.', 'Stille Regeneration', 'Wärme und Duft bringen Sie zurück.'],
@@ -357,7 +357,7 @@ const packs: Record<Exclude<Locale, 'zh' | 'zh-TW' | 'en'>, { minute: string; da
     data: {
       nav: ['Философия', 'Процедуры', 'Пространство'],
       book: 'Записаться',
-      hero: ['Позвольте коже головы дышать', 'Позвольте телу и разуму замедлиться', 'Растительный уход, профессиональные техники и тихое пространство — время только для Вас.', 'Смотреть процедуры'],
+      hero: ['Расслабьтесь Освежитесь Обновитесь', 'Дышите у самых корней\nи снова найдите себя', 'Тихая пауза среди насыщенного дня. В ORA Toucheer Head Spa закройте глаза на мгновение, опустите плечи и оставьте спешку дня за дверью. Мягкий растительный уход за кожей головы и тихое пространство для отдыха помогут вам глубоко вздохнуть и отпустить напряжение дня.', 'Смотреть процедуры'],
       philosophy: ['Естественный баланс начинается с корней', 'Уход за кожей головы — больше, чем очищение: это ритуал прикосновений, дыхания и спокойного ритма.', 'Растительное очищение', 'Мягкие экстракты поддерживают естественный ритм.', 'Индивидуальный подход', 'Мы подбираем уход под Ваше состояние.', 'Глубокое расслабление', 'Бережные техники для головы, шеи и плеч.', 'Продолжительный уход', 'Одно впечатление становится привычкой заботы о себе.'],
       services: ['Три ритма. Одно ощущение лёгкости.', 'Каждая процедура начинается с беседы. Выберите ощущение, которое нужно Вам сегодня.', 'Чистота и спокойствие', 'Мягкое очищение от себума и остатков средств.', 'Энергия и сияние', 'Очищение и питание для мягких сияющих волос.', 'Глубокая тишина', 'Долгое расслабление от головы до плеч.', 'Выбрать ритуал'],
       ritual: ['Ритуал для всех пяти чувств', 'Консультация', 'Узнаём о привычках и самочувствии.', 'Диагностика', 'Оцениваем кожу головы и волосы.', 'Очищение', 'Мягко очищаем и освежаем.', 'Расслабление', 'Снимаем напряжение головы и плеч.', 'Спокойное обновление', 'Тепло и аромат возвращают к себе.'],
@@ -373,6 +373,7 @@ const packs: Record<Exclude<Locale, 'zh' | 'zh-TW' | 'en'>, { minute: string; da
 const traditionalMap: Record<string, string> = {
   '养': '養', '护': '護', '疗': '療', '愈': '癒', '关': '關', '于': '於', '预': '預', '验': '驗',
   '让': '讓', '头': '頭', '发': '髮', '专业': '專業', '静': '靜', '间': '間', '属': '屬', '净': '淨',
+  '闭': '閉',
   '选': '選', '节': '節', '从': '從', '张': '張', '松': '鬆', '专': '專', '观': '觀', '当': '當',
   '层': '層', '续': '續', '种': '種', '项': '項', '轻': '輕', '时': '時', '钟': '鐘', '积': '積',
   '残': '殘', '洁': '潔', '丝': '絲', '态': '態', '显': '顯', '颈': '頸', '热': '熱', '仪': '儀',

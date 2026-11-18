@@ -1,0 +1,40 @@
+# ORA Head Spa — https://www.myoraspa.com
+
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /account
+Disallow: /api/
+
+# AI answer engines —— 允许抓取，便于被 ChatGPT / Perplexity / Claude / Gemini 引用
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+Sitemap: https://www.myoraspa.com/sitemap.xml

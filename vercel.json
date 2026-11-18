@@ -1,6 +1,19 @@
 {
   "routes": [
-    { "src": "^/(preview|full)/?$", "dest": "/index-bak.html" },
+    { "src": "^/(preview|full)/?$", "dest": "/preview.html" },
+    { "src": "^/about/?$", "dest": "/about.html" },
+    { "src": "^/gift-cards/?$", "dest": "/gift-cards.html" },
+    { "src": "^/membership/?$", "dest": "/membership.html" },
     { "src": "^/(?!api/)(?!.*\\..*).*$", "dest": "/index.html" }
+  ],
+  "headers": [
+    {
+      "source": "/(admin|account)(.*)",
+      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+    },
+    {
+      "source": "/api/(.*)",
+      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+    }
   ]
 }
