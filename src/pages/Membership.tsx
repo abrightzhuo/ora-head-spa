@@ -6,6 +6,7 @@ import {
   Package,
   Sparkles,
 } from 'lucide-react'
+import { GeoPrefix } from '../components/GeoPrefix'
 import { Header } from '../components/Header'
 import { useCustomerAuth } from '../contexts/customerAuth'
 import { customerCopy } from '../customerCopy'
@@ -338,7 +339,10 @@ export default function Membership() {
         <img src="/images/interior-01.jpg" alt="" />
         <div>
           <p>{t.eyebrow}</p>
-          <h1>{t.title}</h1>
+          <h1>
+            <GeoPrefix />
+            {t.title}
+          </h1>
           <strong>{t.price}</strong>
           <span>{t.intro}</span>
         </div>

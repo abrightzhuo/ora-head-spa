@@ -6,6 +6,7 @@ import {
   Gift,
   Share2,
 } from 'lucide-react'
+import { GeoPrefix } from '../components/GeoPrefix'
 import { Header } from '../components/Header'
 import { useCustomerAuth } from '../contexts/customerAuth'
 import { images } from '../content'
@@ -392,7 +393,10 @@ export default function GiftCards() {
         <img src={images.interiorHall} alt="" />
         <div>
           <p>{t.eyebrow}</p>
-          <h1>{t.title}</h1>
+          <h1>
+            <GeoPrefix />
+            {t.title}
+          </h1>
           <span>{t.intro}</span>
         </div>
       </section>

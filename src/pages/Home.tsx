@@ -1,6 +1,8 @@
 import { useEffect } from 'react'
 import { SpaceGallery, Testimonials } from '../components/SpaceAbout'
 import { BookingV2 } from '../components/BookingV2'
+import { BrandFacts } from '../components/BrandFacts'
+import { Faq } from '../components/Faq'
 import { Footer, MobileTabBar } from '../components/FooterMobile'
 import { Header } from '../components/Header'
 import { Hero, Philosophy } from '../components/HeroPhilosophy'
@@ -82,10 +84,12 @@ export default function Home() {
         {!comingSoon && (
           <>
             <Philosophy />
+            <BrandFacts />
             <Services />
             <Ritual />
             <SpaceGallery />
             <Testimonials />
+            <Faq />
             <BookingV2 />
           </>
         )}

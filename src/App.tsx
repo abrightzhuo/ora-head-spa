@@ -1,5 +1,7 @@
 import { useEffect } from 'react'
+import { JsonLd } from './components/JsonLd'
 import { MobileAppNav } from './components/MobileAppNav'
+import { breadcrumbGraph } from './data/structuredData'
 import AboutPage from './pages/About'
 import Home from './pages/Home'
 import Admin from './pages/Admin'
@@ -95,8 +97,28 @@ export default function App() {
       <Home />
     )
 
+  // 面包屑只给可被索引的公开子页，首页（/preview）本身不需要
+  const breadcrumbs: { name: string; path: string }[] | null =
+    path === '/about'
+      ? [
+          { name: 'ORA Head Spa', path: '/preview' },
+          { name: 'Our Story', path: '/about' },
+        ]
+      : path === '/gift-cards'
+        ? [
+            { name: 'ORA Head Spa', path: '/preview' },
+            { name: 'Gift Cards', path: '/gift-cards' },
+          ]
+        : path === '/membership'
+          ? [
+              { name: 'ORA Head Spa', path: '/preview' },
+              { name: 'Annual Membership', path: '/membership' },
+            ]
+          : null
+
   return (
     <>
+      {breadcrumbs && <JsonLd data={breadcrumbGraph(breadcrumbs)} id="breadcrumb" />}
       {page}
       {path !== '/admin' && <MobileAppNav />}
     </>

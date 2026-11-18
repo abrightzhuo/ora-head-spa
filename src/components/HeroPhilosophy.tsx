@@ -21,6 +21,8 @@ export function Hero() {
           {t.eyebrow}
         </div>
         <h1 id="hero-title" className="reveal-up delay-1">
+          {/* 唯一 H1，带上地域限定，便于 AI/搜索判断「哪家店」，视觉上不占位 */}
+          <span className="sr-only">Head Spa in Waltham, MA — </span>
           <span>{t.title}</span>
           <em>{t.italic}</em>
         </h1>

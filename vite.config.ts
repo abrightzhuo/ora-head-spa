@@ -1,6 +1,7 @@
 import { defineConfig, type Connect, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 import tsconfigPaths from "vite-tsconfig-paths";
+import { siteGraph, toJsonLdText } from './src/data/structuredData'
 
 /**
  * vercel.json 会把 /preview 与 /full 重写到 index-bak.html（完整站点）。
@@ -28,6 +29,20 @@ const sitePreviewRoutes = (): Plugin => ({
   },
 })
 
+/**
+ * 把站点级 JSON-LD（Organization / HealthAndBeautyBusiness / Service ×3 / Offer ×2）
+ * 直接写进每个 HTML 外壳的 <head>。这样即使不执行 JS 的抓取器（GPTBot、PerplexityBot 等）
+ * 也能读到实体信息，且预渲染产物会原样继承这段脚本。
+ */
+const siteJsonLd = (): Plugin => ({
+  name: 'ora-site-json-ld',
+  transformIndexHtml(html) {
+    const json = toJsonLdText(siteGraph())
+    const tag = `<script type="application/ld+json" data-ora="site-graph">${json}</script>`
+    return html.replace('</head>', `  ${tag}\n  </head>`)
+  },
+})
+
 // https://vite.dev/config/
 export default defineConfig(({ command }) => ({
   build: {
@@ -49,6 +64,7 @@ export default defineConfig(({ command }) => ({
     },
   },
   plugins: [
+    siteJsonLd(),
     sitePreviewRoutes(),
     react({
       babel: {

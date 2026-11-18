@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { ArrowUpRight } from 'lucide-react'
 import { Footer } from '../components/FooterMobile'
+import { GeoPrefix } from '../components/GeoPrefix'
 import { Header } from '../components/Header'
 import { siteHomePath } from '../lib/comingSoon'
 import { useSiteStore, type Locale } from '../store/useSiteStore'
@@ -604,7 +605,10 @@ export default function AboutPage() {
         <img src="/images/about/story-hero.jpg" alt="" />
         <div className="about-page__hero-inner">
           <p className="eyebrow eyebrow--light">{t.hero.eyebrow}</p>
-          <h1>{t.hero.title}</h1>
+          <h1>
+            <GeoPrefix />
+            {t.hero.title}
+          </h1>
           <p className="about-page__lede">{t.hero.subtitle}</p>
         </div>
       </section>
