@@ -34,7 +34,13 @@ export const HREFLANG: Record<Locale, string> = {
 }
 
 /** 需要做语言索引的公开页面（与 prerender 的 ROUTES 对齐） */
-export const PUBLIC_ROUTES = ['/preview', '/about', '/gift-cards', '/membership'] as const
+export const PUBLIC_ROUTES = [
+  '/preview',
+  '/about',
+  '/gift-cards',
+  '/membership',
+  '/forum',
+] as const
 export type PublicRoute = (typeof PUBLIC_ROUTES)[number]
 
 const slugToLocale = new Map<string, Locale>(

@@ -6,6 +6,7 @@ import { StatusBar, Style } from '@capacitor/status-bar'
 import App from './App'
 import { CustomerAuthProvider } from './contexts/CustomerAuthContext'
 import './index.css'
+import './forum.css'
 
 if (Capacitor.isNativePlatform()) {
   document.documentElement.classList.add('is-native-app')

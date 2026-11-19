@@ -6,6 +6,7 @@ import AboutPage from './pages/About'
 import Home from './pages/Home'
 import Admin from './pages/Admin'
 import CustomerAccount from './pages/CustomerAccount'
+import Forum from './pages/Forum'
 import GiftCards from './pages/GiftCards'
 import Membership from './pages/Membership'
 import ProviderProfile from './pages/ProviderProfile'
@@ -40,6 +41,31 @@ const metadata: Record<
     ru: { home: 'ORA | Растительный уход за кожей головы и лица', about: 'Наша история | ORA', giftCards: 'Подарочные карты ORA', membership: 'Годовое членство ORA', provider: 'Специалисты ORA по уходу за кожей головы', account: 'Мой ORA', description: 'ORA сочетает растительный уход, профессиональные техники и спокойное пространство для восстановления.' },
 }
 
+/** 论坛页标题：与问答页面文案保持同一语气 */
+const forumTitle: Record<Locale, string> = {
+  zh: '顾客问答 | ORA',
+  'zh-TW': '顧客問答 | ORA',
+  en: 'Ask ORA | Customer Q&A',
+  es: 'Pregunta a ORA | Preguntas de la comunidad',
+  fr: 'Demandez à ORA | Questions de la communauté',
+  ja: 'ORA に質問する | お客様の質問',
+  ko: 'ORA에게 묻기 | 고객 문의',
+  de: 'Frag ORA | Fragen der Community',
+  ru: 'Спросите ORA | Вопросы гостей',
+}
+
+const forumDescription: Record<Locale, string> = {
+  zh: '查看顾客关于头皮护理、服务项目与到店体验的真实提问，以及 ORA 团队的亲自回复。登录后即可提问。',
+  'zh-TW': '查看顧客關於頭皮護理、服務項目與到店體驗的真實提問，以及 ORA 團隊的親自回覆。登入後即可提問。',
+  en: 'Real questions from guests about scalp care, treatments and visits to ORA Head Spa, answered personally by our team. Sign in to ask your own question.',
+  es: 'Preguntas reales de clientes sobre el cuidado del cuero cabelludo, los tratamientos y las visitas, respondidas por el equipo de ORA. Inicia sesión para preguntar.',
+  fr: 'De vraies questions de clients sur le soin du cuir chevelu, les soins et les visites, avec les réponses de l’équipe ORA. Connectez-vous pour poser la vôtre.',
+  ja: '頭皮ケアやメニュー、ご来店についてのお客様の実際の質問と、ORA チームからの回答。ログインすると質問できます。',
+  ko: '두피 케어와 시술, 방문에 대해 고객이 남긴 실제 질문과 ORA 팀의 답변을 확인하세요. 로그인 후 질문할 수 있습니다.',
+  de: 'Echte Fragen von Gästen zu Kopfhautpflege, Behandlungen und Besuchen – persönlich beantwortet vom ORA-Team. Melden Sie sich an, um selbst zu fragen.',
+  ru: 'Реальные вопросы гостей об уходе за кожей головы, процедурах и визитах, на которые отвечает команда ORA. Войдите, чтобы задать свой вопрос.',
+}
+
 export default function App() {
   const [pathname, setPathname] = useState(() => window.location.pathname)
   const locale = useSiteStore((state) => state.locale)
@@ -63,18 +89,21 @@ export default function App() {
 
   useEffect(() => {
     const current = metadata[locale]
-    const title =
-      path === '/about'
+    const isForum = path === '/forum'
+    const title = isForum
+      ? forumTitle[locale]
+      : path === '/about'
         ? current.about
         : path === '/gift-cards'
-        ? current.giftCards
+          ? current.giftCards
           : path === '/membership'
             ? current.membership
-        : path === '/account'
-          ? current.account
-          : path.startsWith('/providers/')
-            ? current.provider
-            : current.home
+            : path === '/account'
+              ? current.account
+              : path.startsWith('/providers/')
+                ? current.provider
+                : current.home
+    const description = isForum ? forumDescription[locale] : current.description
     document.title = title
 
     const setMeta = (attr: 'name' | 'property', key: string, value: string) => {
@@ -87,12 +116,12 @@ export default function App() {
       tag.setAttribute('content', value)
     }
 
-    setMeta('name', 'description', current.description)
+    setMeta('name', 'description', description)
     setMeta('property', 'og:title', title)
-    setMeta('property', 'og:description', current.description)
+    setMeta('property', 'og:description', description)
     setMeta('property', 'og:url', `${window.location.origin}${canonicalPath}`)
     setMeta('name', 'twitter:title', title)
-    setMeta('name', 'twitter:description', current.description)
+    setMeta('name', 'twitter:description', description)
 
     let canonical = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]')
     if (!canonical) {
@@ -133,6 +162,8 @@ export default function App() {
       <GiftCards />
     ) : path === '/membership' ? (
       <Membership />
+    ) : path === '/forum' ? (
+      <Forum />
     ) : path.startsWith('/providers/') ? (
       <ProviderProfile providerId={path.split('/')[2] ?? ''} />
     ) : (
@@ -156,7 +187,12 @@ export default function App() {
               { name: 'ORA Head Spa', path: '/preview' },
               { name: 'Annual Membership', path: '/membership' },
             ]
-          : null
+          : path === '/forum'
+            ? [
+                { name: 'ORA Head Spa', path: '/preview' },
+                { name: 'Customer Q&A', path: '/forum' },
+              ]
+            : null
 
   return (
     <>

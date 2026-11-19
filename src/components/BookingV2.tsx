@@ -829,7 +829,7 @@ export function BookingV2() {
       if (form.providerId) query.set('providerId', form.providerId)
 
       try {
-        const response = await fetch(`/api/availability?${query}`, {
+        const response = await fetch(`/api/catalog?view=availability&${query}`, {
           signal: controller.signal,
         })
         const result = (await response.json()) as { slots?: Slot[] }

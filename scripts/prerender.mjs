@@ -39,7 +39,7 @@ const LOCALES = [
   { code: 'ru', prefix: 'ru' },
 ]
 
-const SUB_PAGES = ['about', 'gift-cards', 'membership']
+const SUB_PAGES = ['about', 'gift-cards', 'membership', 'forum']
 
 /** 与 src/lib/locales.ts 的 htmlLang 一致，用于校验渲染语言 */
 const HTML_LANG = {

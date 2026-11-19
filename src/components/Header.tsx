@@ -45,6 +45,18 @@ const aboutLabel: Record<Locale, string> = {
   ru: 'О нас',
 }
 
+const forumLabel: Record<Locale, string> = {
+  zh: '顾客问答',
+  'zh-TW': '顧客問答',
+  en: 'Q&A',
+  es: 'Preguntas',
+  fr: 'Questions',
+  ja: 'ご質問',
+  ko: '문의',
+  de: 'Fragen',
+  ru: 'Вопросы',
+}
+
 const membershipLabel: Record<Locale, string> = {
   zh: '年度会员',
   'zh-TW': '年度會員',
@@ -179,6 +191,9 @@ export function Header({
             <a href={pageHref('/about')}>
               {aboutLabel[locale]}
             </a>
+            <a href={pageHref('/forum')}>
+              {forumLabel[locale]}
+            </a>
             <a href={pageHref('/gift-cards')}>
               {giftCardLabel[locale]}
             </a>
@@ -252,17 +267,21 @@ export function Header({
               <span>04</span>
               {aboutLabel[locale]}
             </a>
-            <a href={pageHref('/gift-cards')} onClick={closeMenu}>
+            <a href={pageHref('/forum')} onClick={closeMenu}>
               <span>05</span>
+              {forumLabel[locale]}
+            </a>
+            <a href={pageHref('/gift-cards')} onClick={closeMenu}>
+              <span>06</span>
               {giftCardLabel[locale]}
             </a>
               <a href={pageHref('/membership')} onClick={closeMenu}>
-                <span>06</span>
+                <span>07</span>
                 {membershipLabel[locale]}
               </a>
           {user ? (
             <a href={`/account?lang=${locale}`} onClick={closeMenu}>
-                <span>07</span>
+                <span>08</span>
               {customer.account}
             </a>
           ) : (
@@ -274,7 +293,7 @@ export function Header({
                 openAuth('sign-in')
               }}
             >
-                <span>07</span>
+                <span>08</span>
               {customer.signIn}
             </button>
           )}

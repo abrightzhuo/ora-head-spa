@@ -4,46 +4,55 @@
     { "src": "^/about/?$", "dest": "/about.html" },
     { "src": "^/gift-cards/?$", "dest": "/gift-cards.html" },
     { "src": "^/membership/?$", "dest": "/membership.html" },
+    { "src": "^/forum/?$", "dest": "/forum.html" },
 
     { "src": "^/zh/?$", "dest": "/zh/index.html" },
     { "src": "^/zh/about/?$", "dest": "/zh/about.html" },
     { "src": "^/zh/gift-cards/?$", "dest": "/zh/gift-cards.html" },
     { "src": "^/zh/membership/?$", "dest": "/zh/membership.html" },
+    { "src": "^/zh/forum/?$", "dest": "/zh/forum.html" },
 
     { "src": "^/zh-tw/?$", "dest": "/zh-tw/index.html" },
     { "src": "^/zh-tw/about/?$", "dest": "/zh-tw/about.html" },
     { "src": "^/zh-tw/gift-cards/?$", "dest": "/zh-tw/gift-cards.html" },
     { "src": "^/zh-tw/membership/?$", "dest": "/zh-tw/membership.html" },
+    { "src": "^/zh-tw/forum/?$", "dest": "/zh-tw/forum.html" },
 
     { "src": "^/es/?$", "dest": "/es/index.html" },
     { "src": "^/es/about/?$", "dest": "/es/about.html" },
     { "src": "^/es/gift-cards/?$", "dest": "/es/gift-cards.html" },
     { "src": "^/es/membership/?$", "dest": "/es/membership.html" },
+    { "src": "^/es/forum/?$", "dest": "/es/forum.html" },
 
     { "src": "^/fr/?$", "dest": "/fr/index.html" },
     { "src": "^/fr/about/?$", "dest": "/fr/about.html" },
     { "src": "^/fr/gift-cards/?$", "dest": "/fr/gift-cards.html" },
     { "src": "^/fr/membership/?$", "dest": "/fr/membership.html" },
+    { "src": "^/fr/forum/?$", "dest": "/fr/forum.html" },
 
     { "src": "^/ja/?$", "dest": "/ja/index.html" },
     { "src": "^/ja/about/?$", "dest": "/ja/about.html" },
     { "src": "^/ja/gift-cards/?$", "dest": "/ja/gift-cards.html" },
     { "src": "^/ja/membership/?$", "dest": "/ja/membership.html" },
+    { "src": "^/ja/forum/?$", "dest": "/ja/forum.html" },
 
     { "src": "^/ko/?$", "dest": "/ko/index.html" },
     { "src": "^/ko/about/?$", "dest": "/ko/about.html" },
     { "src": "^/ko/gift-cards/?$", "dest": "/ko/gift-cards.html" },
     { "src": "^/ko/membership/?$", "dest": "/ko/membership.html" },
+    { "src": "^/ko/forum/?$", "dest": "/ko/forum.html" },
 
     { "src": "^/de/?$", "dest": "/de/index.html" },
     { "src": "^/de/about/?$", "dest": "/de/about.html" },
     { "src": "^/de/gift-cards/?$", "dest": "/de/gift-cards.html" },
     { "src": "^/de/membership/?$", "dest": "/de/membership.html" },
+    { "src": "^/de/forum/?$", "dest": "/de/forum.html" },
 
     { "src": "^/ru/?$", "dest": "/ru/index.html" },
     { "src": "^/ru/about/?$", "dest": "/ru/about.html" },
     { "src": "^/ru/gift-cards/?$", "dest": "/ru/gift-cards.html" },
     { "src": "^/ru/membership/?$", "dest": "/ru/membership.html" },
+    { "src": "^/ru/forum/?$", "dest": "/ru/forum.html" },
 
     { "src": "^/(?!api/)(?!.*\\..*).*$", "dest": "/index.html" }
   ],

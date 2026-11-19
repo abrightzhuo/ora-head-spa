@@ -7,6 +7,7 @@ import {
   Clock3,
   Gift,
   LogOut,
+  MessageCircleQuestion,
   ReceiptText,
   RefreshCw,
   Search,
@@ -19,6 +20,7 @@ import {
 import { AppointmentCalendar } from '../components/admin/AppointmentCalendar'
 import { CheckoutManager } from '../components/admin/CheckoutManager'
 import { CustomerRecordsPanel } from '../components/admin/CustomerRecordsPanel'
+import { ForumManager } from '../components/admin/ForumManager'
 import { EarningsPanel } from '../components/admin/EarningsPanel'
 import { GiftCardManager } from '../components/admin/GiftCardManager'
 import { MembershipManager } from '../components/admin/MembershipManager'
@@ -55,6 +57,7 @@ type SortDirection = 'near' | 'far'
 type AdminTab =
   | 'appointments'
   | 'customers'
+  | 'forum'
   | 'checkout'
     | 'memberships'
   | 'giftcards'
@@ -101,6 +104,7 @@ const adminCopy = {
     tabs: {
       appointments: '预约管理',
       customers: '顾客档案',
+      forum: '顾客问答',
       checkout: 'Checkout / 收款',
         memberships: '会员卡',
         giftcards: '礼品卡',
@@ -222,6 +226,7 @@ const adminCopy = {
     tabs: {
       appointments: 'Bookings',
       customers: 'Customers',
+      forum: 'Customer Q&A',
       checkout: 'Checkout',
         memberships: 'Memberships',
         giftcards: 'Gift Cards',
@@ -1123,6 +1128,15 @@ export default function Admin() {
             {t.tabs.customers}
           </button>
           <button
+            className={activeTab === 'forum' ? 'is-active' : ''}
+            type="button"
+            onClick={() => setActiveTab('forum')}
+            aria-pressed={activeTab === 'forum'}
+          >
+            <MessageCircleQuestion size={17} />
+            {t.tabs.forum}
+          </button>
+          <button
             className={activeTab === 'memberships' ? 'is-active' : ''}
             type="button"
             onClick={() => setActiveTab('memberships')}
@@ -1367,6 +1381,8 @@ export default function Admin() {
           }
         />
       )}
+
+      {activeTab === 'forum' && <ForumManager locale={locale} />}
 
       {canCheckout && activeTab === 'checkout' && (
         <CheckoutManager

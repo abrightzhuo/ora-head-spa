@@ -1,3 +1,4 @@
+import availabilityHandler from './_lib/availability.js'
 import { getServerClient, json } from './_lib/supabase.js'
 import { providerLocalizations } from './_lib/provider-localizations.js'
 
@@ -56,6 +57,12 @@ const providerDefaults = {
 }
 
 export default async function handler(request, response) {
+  // 可预约时段与目录共用同一个 Serverless Function，
+  // 以避开 Hobby 计划 12 个函数的部署上限。
+  if (request.query?.view === 'availability') {
+    return availabilityHandler(request, response)
+  }
+
   if (request.method !== 'GET') {
     response.setHeader('Allow', 'GET')
     return json(response, 405, { error: 'method_not_allowed' })
