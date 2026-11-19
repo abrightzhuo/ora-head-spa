@@ -11,6 +11,7 @@ import { Header } from '../components/Header'
 import { useCustomerAuth } from '../contexts/customerAuth'
 import { customerCopy } from '../customerCopy'
 import { siteHomePath } from '../lib/comingSoon'
+import { localeHomePath } from '../lib/localeRouting'
 import { formatEasternDateTime } from '../lib/dateTime'
 import { useSiteStore, type Locale } from '../store/useSiteStore'
 
@@ -330,7 +331,7 @@ export default function Membership() {
   return (
     <main className="membership-page">
       <Header
-        actionHref={`${siteHomePath()}?lang=${locale}`}
+        actionHref={localeHomePath(locale, siteHomePath())}
         actionLabel={t.back}
         returnToHome
       />

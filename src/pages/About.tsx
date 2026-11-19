@@ -4,6 +4,7 @@ import { Footer } from '../components/FooterMobile'
 import { GeoPrefix } from '../components/GeoPrefix'
 import { Header } from '../components/Header'
 import { siteHomePath } from '../lib/comingSoon'
+import { localeHomePath } from '../lib/localeRouting'
 import { useSiteStore, type Locale } from '../store/useSiteStore'
 
 type Chapter = {
@@ -579,7 +580,7 @@ const aboutCopy: Record<Locale, AboutCopy> = {
 export default function AboutPage() {
   const locale = useSiteStore((state) => state.locale)
   const t = aboutCopy[locale]
-  const bookHref = `${siteHomePath()}?lang=${locale}#booking`
+  const bookHref = `${localeHomePath(locale, siteHomePath())}#booking`
 
   useEffect(() => {
     const revealObserver = new IntersectionObserver(

@@ -6,6 +6,7 @@ import {
   UserRound,
 } from 'lucide-react'
 import { siteHomePath } from '../lib/comingSoon'
+import { localeHomePath, localePath, stripLocale } from '../lib/localeRouting'
 import { useSiteStore, type Locale } from '../store/useSiteStore'
 
 const labels: Record<
@@ -32,31 +33,32 @@ const labels: Record<
 export function MobileAppNav() {
   const locale = useSiteStore((state) => state.locale)
   const t = labels[locale]
-  const path = window.location.pathname
+  const path = stripLocale(window.location.pathname)
+  const onHome = path === '/' || path === '/preview'
   const hash = window.location.hash
   const localeQuery = `lang=${encodeURIComponent(locale)}`
-  const siteBase = siteHomePath()
+  const homePath = localeHomePath(locale, siteHomePath())
   const items = [
     {
-      href: `${siteBase}?${localeQuery}`,
+      href: homePath,
       label: t.home,
       icon: Home,
-      active: path === siteBase && hash !== '#booking',
+      active: onHome && hash !== '#booking',
     },
     {
-      href: `${siteBase}?${localeQuery}#booking`,
+      href: `${homePath}#booking`,
       label: t.book,
       icon: CalendarDays,
-      active: path === siteBase && hash === '#booking',
+      active: onHome && hash === '#booking',
     },
     {
-      href: `/membership?${localeQuery}`,
+      href: localePath(locale, '/membership'),
       label: t.membership,
       icon: Sparkles,
       active: path === '/membership',
     },
     {
-      href: `/gift-cards?${localeQuery}`,
+      href: localePath(locale, '/gift-cards'),
       label: t.gift,
       icon: Gift,
       active: path === '/gift-cards',

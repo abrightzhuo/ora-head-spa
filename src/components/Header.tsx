@@ -11,6 +11,7 @@ import {
 import { useCustomerAuth } from '../contexts/customerAuth'
 import { customerCopy } from '../customerCopy'
 import { isComingSoon, siteHomePath } from '../lib/comingSoon'
+import { localeHomePath, localePath } from '../lib/localeRouting'
 import { copy } from '../localizedContent'
 import {
   localeLabels,
@@ -150,10 +151,11 @@ export function Header({
   }, [menuOpen])
 
   const closeMenu = () => setMenuOpen(false)
-  const siteBase = siteHomePath()
-  const homeHref = returnToHome ? `${siteBase}?lang=${locale}` : '#home'
-  const sectionHref = (href: string) =>
-    returnToHome ? `${siteBase}?lang=${locale}${href}` : href
+  // 当前语言首页：/es、/zh-tw…；英文仍是 /（coming-soon 期间是 /preview）
+  const homePath = localeHomePath(locale, siteHomePath())
+  const homeHref = returnToHome ? homePath : '#home'
+  const sectionHref = (href: string) => (returnToHome ? `${homePath}${href}` : href)
+  const pageHref = (path: string) => localePath(locale, path)
   const openBooking = () => {
     if (!returnToHome) {
       window.dispatchEvent(new Event('ora:open-booking'))
@@ -174,13 +176,13 @@ export function Header({
               {item.label}
             </a>
           ))}
-            <a href={`/about?lang=${locale}`}>
+            <a href={pageHref('/about')}>
               {aboutLabel[locale]}
             </a>
-            <a href={`/gift-cards?lang=${locale}`}>
+            <a href={pageHref('/gift-cards')}>
               {giftCardLabel[locale]}
             </a>
-              <a href={`/membership?lang=${locale}`}>
+              <a href={pageHref('/membership')}>
                 {membershipLabel[locale]}
               </a>
         </nav>
@@ -246,15 +248,15 @@ export function Header({
               {item.label}
             </a>
           ))}
-            <a href={`/about?lang=${locale}`} onClick={closeMenu}>
+            <a href={pageHref('/about')} onClick={closeMenu}>
               <span>04</span>
               {aboutLabel[locale]}
             </a>
-            <a href={`/gift-cards?lang=${locale}`} onClick={closeMenu}>
+            <a href={pageHref('/gift-cards')} onClick={closeMenu}>
               <span>05</span>
               {giftCardLabel[locale]}
             </a>
-              <a href={`/membership?lang=${locale}`} onClick={closeMenu}>
+              <a href={pageHref('/membership')} onClick={closeMenu}>
                 <span>06</span>
                 {membershipLabel[locale]}
               </a>

@@ -11,6 +11,7 @@ import { Header } from '../components/Header'
 import { useCustomerAuth } from '../contexts/customerAuth'
 import { customerCopy } from '../customerCopy'
 import { siteHomePath } from '../lib/comingSoon'
+import { localeHomePath, localePath } from '../lib/localeRouting'
 import { formatEasternDateTime } from '../lib/dateTime'
 import { useSiteStore } from '../store/useSiteStore'
 
@@ -211,7 +212,7 @@ export default function CustomerAccount() {
   return (
     <main className="customer-account-page">
       <Header
-        actionHref={`${siteHomePath()}?lang=${locale}`}
+        actionHref={localeHomePath(locale, siteHomePath())}
         actionLabel={t.backHome}
         returnToHome
       />
@@ -416,7 +417,7 @@ export default function CustomerAccount() {
                 ) : (
                   <div className="customer-account-state">
                     <p>{membershipLabels.none}</p>
-                    <a href={`/membership?lang=${locale}`}>
+                    <a href={localePath(locale, '/membership')}>
                       {membershipLabels.join}
                     </a>
                   </div>

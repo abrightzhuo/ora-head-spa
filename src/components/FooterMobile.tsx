@@ -1,5 +1,6 @@
 import { CalendarDays, Home, Sparkles, type LucideIcon } from 'lucide-react'
 import { siteHomePath } from '../lib/comingSoon'
+import { localeHomePath, stripLocale } from '../lib/localeRouting'
 import { copy } from '../localizedContent'
 import { useSiteStore, type Locale } from '../store/useSiteStore'
 import { BrandMark } from './BrandMark'
@@ -19,11 +20,10 @@ const mobileNavigationLabel: Record<Locale, string> = {
 export function Footer() {
   const locale = useSiteStore((state) => state.locale)
   const t = copy[locale]
-  const siteBase = siteHomePath()
-  const sectionHref = (href: string) =>
-    window.location.pathname === siteBase
-      ? href
-      : `${siteBase}?lang=${locale}${href}`
+  const homePath = localeHomePath(locale, siteHomePath())
+  const route = stripLocale(window.location.pathname)
+  const onHome = route === '/' || route === '/preview'
+  const sectionHref = (href: string) => (onHome ? href : `${homePath}${href}`)
 
   return (
     <footer className="footer">

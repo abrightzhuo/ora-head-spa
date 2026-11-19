@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { JsonLd } from './components/JsonLd'
 import { MobileAppNav } from './components/MobileAppNav'
 import { breadcrumbGraph } from './data/structuredData'
@@ -9,6 +9,12 @@ import CustomerAccount from './pages/CustomerAccount'
 import GiftCards from './pages/GiftCards'
 import Membership from './pages/Membership'
 import ProviderProfile from './pages/ProviderProfile'
+import {
+  alternateLinks,
+  isPublicRoute,
+  localePath,
+  stripLocale,
+} from './lib/localeRouting'
 import { useSiteStore, type Locale } from './store/useSiteStore'
 
 const metadata: Record<
@@ -35,8 +41,25 @@ const metadata: Record<
 }
 
 export default function App() {
-  const path = window.location.pathname
+  const [pathname, setPathname] = useState(() => window.location.pathname)
   const locale = useSiteStore((state) => state.locale)
+
+  // pushState 不会触发渲染：前进 / 后退后同步一次路径
+  useEffect(() => {
+    const onPopState = () => setPathname(window.location.pathname)
+    window.addEventListener('popstate', onPopState)
+    return () => window.removeEventListener('popstate', onPopState)
+  }, [])
+
+  // 去掉语言前缀后再做路由匹配：/es/about 与 /about 渲染同一个页面
+  const path = stripLocale(pathname)
+  const isHome = path === '/' || path === '/preview'
+  // 首页的规范地址是 /preview（英文）或 /<slug>（其它语言）
+  const publicRoute = isHome ? '/preview' : path
+  const canonicalPath =
+    isPublicRoute(publicRoute) && !(isHome && locale === 'en')
+      ? localePath(locale, publicRoute)
+      : pathname
 
   useEffect(() => {
     const current = metadata[locale]
@@ -67,7 +90,7 @@ export default function App() {
     setMeta('name', 'description', current.description)
     setMeta('property', 'og:title', title)
     setMeta('property', 'og:description', current.description)
-    setMeta('property', 'og:url', `${window.location.origin}${path}`)
+    setMeta('property', 'og:url', `${window.location.origin}${canonicalPath}`)
     setMeta('name', 'twitter:title', title)
     setMeta('name', 'twitter:description', current.description)
 
@@ -77,8 +100,27 @@ export default function App() {
       canonical.rel = 'canonical'
       document.head.appendChild(canonical)
     }
-    canonical.href = `${window.location.origin}${path}`
-  }, [locale, path])
+    canonical.href = `${window.location.origin}${canonicalPath}`
+
+    // 公开页：为 9 种语言各输出一条 hreflang，让搜索引擎知道各语言版本
+    document
+      .head
+      .querySelectorAll('link[data-ora="alternate"]')
+      .forEach((tag) => tag.remove())
+    if (isPublicRoute(publicRoute)) {
+      for (const { hreflang, href } of alternateLinks(
+        publicRoute,
+        window.location.origin,
+      )) {
+        const link = document.createElement('link')
+        link.rel = 'alternate'
+        link.hreflang = hreflang
+        link.href = href
+        link.dataset.ora = 'alternate'
+        document.head.appendChild(link)
+      }
+    }
+  }, [locale, path, publicRoute, canonicalPath])
 
   const page =
     path === '/admin' ? (

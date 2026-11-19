@@ -12,6 +12,7 @@ import { useCustomerAuth } from '../contexts/customerAuth'
 import { images } from '../content'
 import { customerCopy } from '../customerCopy'
 import { siteHomePath } from '../lib/comingSoon'
+import { localeHomePath } from '../lib/localeRouting'
 import { copy as siteCopy } from '../localizedContent'
 import { useSiteStore, type Locale } from '../store/useSiteStore'
 
@@ -384,7 +385,7 @@ export default function GiftCards() {
   return (
     <main className="gift-card-page">
       <Header
-        actionHref={`${siteHomePath()}?lang=${locale}`}
+        actionHref={localeHomePath(locale, siteHomePath())}
         actionLabel={t.back}
         returnToHome
       />

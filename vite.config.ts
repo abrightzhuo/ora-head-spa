@@ -7,9 +7,13 @@ import { siteGraph, toJsonLdText } from './src/data/structuredData'
  * vercel.json 会把 /preview 与 /full 重写到 index-bak.html（完整站点）。
  * 本地 vite dev / preview 没有这条重写规则，会回落到 index.html（coming-soon），
  * 导致导航可见但页面只有 Hero。这里在本地补上同样的重写。
+ *
+ * 语言首页（/es、/zh-tw …）同样指向完整站点，只有子页面继续用 index.html 外壳。
  */
 const rewriteSitePreview = (url?: string) => {
-  const match = url?.match(/^\/(?:preview|full)\/?(\?.*)?$/)
+  const match = url?.match(
+    /^\/(?:preview|full|zh|zh-tw|es|fr|ja|ko|de|ru)\/?(\?.*)?$/,
+  )
   return match ? `/index-bak.html${match[1] ?? ''}` : undefined
 }
 

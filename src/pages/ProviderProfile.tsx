@@ -1,6 +1,7 @@
 import { ArrowLeft, Award, CalendarDays, Languages } from 'lucide-react'
 import { BrandMark } from '../components/BrandMark'
 import { siteHomePath } from '../lib/comingSoon'
+import { localeHomePath } from '../lib/localeRouting'
 import {
   providerTranslation,
   useBookingCatalog,
@@ -51,6 +52,7 @@ export default function ProviderProfile({ providerId }: Props) {
   const services = (catalog?.services ?? []).filter((service) =>
     provider?.service_ids.includes(service.id),
   )
+  const homePath = localeHomePath(locale, siteHomePath())
 
   if (loading) {
     return <main className="provider-profile-state">...</main>
@@ -59,9 +61,9 @@ export default function ProviderProfile({ providerId }: Props) {
   if (error || !provider) {
     return (
       <main className="provider-profile-state">
-        <BrandMark />
+        <BrandMark href={homePath} />
         <h1>{t.notFound}</h1>
-        <a href="/#booking">{t.back}</a>
+        <a href={`${homePath}#booking`}>{t.back}</a>
       </main>
     )
   }
@@ -75,12 +77,12 @@ export default function ProviderProfile({ providerId }: Props) {
   if (services.some((service) => service.id === requestedServiceId)) {
     bookingParams.set('service', requestedServiceId)
   }
-  const bookingHref = `${siteHomePath()}?${bookingParams.toString()}#booking`
+  const bookingHref = `${homePath}?${bookingParams.toString()}#booking`
 
   return (
     <main className="provider-profile-page">
       <header>
-        <BrandMark href={`/?lang=${locale}`} />
+        <BrandMark href={homePath} />
         <a href={bookingHref}>
           <ArrowLeft size={16} />
           {t.back}

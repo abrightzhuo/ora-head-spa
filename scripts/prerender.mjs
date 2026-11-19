@@ -12,7 +12,7 @@
  * 保证路由不会 404，只是退化成原来的客户端渲染。
  */
 import { existsSync } from 'node:fs'
-import { readFile, writeFile } from 'node:fs/promises'
+import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { preview } from 'vite'
 import puppeteer from 'puppeteer'
@@ -24,16 +24,58 @@ const PORT = 4178
 const SITE_ORIGIN = process.env.SITE_ORIGIN ?? 'https://www.myoraspa.com'
 
 /**
- * shell 决定预渲染时的初始 HTML：
- * - /preview 使用 index-bak.html（完整站，无 coming-soon 标记）
- * - 其余页面使用 index.html，与当前线上行为一致（保持站内链接回落到 /preview）
+ * 语言路径（P3）：英文无前缀，其它语言各有一个可索引的前缀。
+ * 与 src/lib/localeRouting.ts 的 LOCALE_SLUGS 保持一致。
  */
-const ROUTES = [
-  { route: '/preview', file: 'preview.html', shell: 'index-bak.html' },
-  { route: '/about', file: 'about.html', shell: 'index.html' },
-  { route: '/gift-cards', file: 'gift-cards.html', shell: 'index.html' },
-  { route: '/membership', file: 'membership.html', shell: 'index.html' },
+const LOCALES = [
+  { code: 'en', prefix: '' },
+  { code: 'zh', prefix: 'zh' },
+  { code: 'zh-TW', prefix: 'zh-tw' },
+  { code: 'es', prefix: 'es' },
+  { code: 'fr', prefix: 'fr' },
+  { code: 'ja', prefix: 'ja' },
+  { code: 'ko', prefix: 'ko' },
+  { code: 'de', prefix: 'de' },
+  { code: 'ru', prefix: 'ru' },
 ]
+
+const SUB_PAGES = ['about', 'gift-cards', 'membership']
+
+/** 与 src/lib/locales.ts 的 htmlLang 一致，用于校验渲染语言 */
+const HTML_LANG = {
+  en: 'en',
+  zh: 'zh-CN',
+  'zh-TW': 'zh-TW',
+  es: 'es',
+  fr: 'fr',
+  ja: 'ja',
+  ko: 'ko',
+  de: 'de',
+  ru: 'ru',
+}
+
+/**
+ * shell 决定预渲染时的初始 HTML：
+ * - 首页（/preview、/es、/zh-tw …）使用 index-bak.html（完整站，无 coming-soon 标记）
+ * - 子页面使用 index.html，与当前线上行为一致
+ *
+ * 文件路径与 URL 一一对应（/es/about -> dist/es/about.html），
+ * 这样 Vercel 可以直接按静态文件命中，省掉重写规则。
+ */
+const ROUTES = LOCALES.flatMap(({ code, prefix }) => [
+  {
+    lang: code,
+    route: prefix ? `/${prefix}` : '/preview',
+    file: prefix ? `${prefix}/index.html` : 'preview.html',
+    shell: 'index-bak.html',
+  },
+  ...SUB_PAGES.map((page) => ({
+    lang: code,
+    route: prefix ? `/${prefix}/${page}` : `/${page}`,
+    file: prefix ? `${prefix}/${page}.html` : `${page}.html`,
+    shell: 'index.html',
+  })),
+])
 
 const MIN_HTML_LENGTH = 5000
 
@@ -99,10 +141,50 @@ for (const { shell } of ROUTES) {
   }
 }
 
+const writeOutput = async (file, html) => {
+  const target = path.join(DIST, file)
+  await mkdir(path.dirname(target), { recursive: true })
+  await writeFile(target, html)
+}
+
 const writeFallbacks = async () => {
   for (const { file, shell } of ROUTES) {
-    await writeFile(path.join(DIST, file), shells.get(shell))
+    await writeOutput(file, shells.get(shell))
   }
+}
+
+/**
+ * sitemap 由路由表生成，避免手写后再漏掉新增语言。
+ * public/sitemap.xml 只是开发环境的英文兜底，线上以这里产出的为准。
+ */
+const priorityOf = (route) => {
+  if (route.endsWith('/about')) return '0.8'
+  if (/\/(gift-cards|membership)$/.test(route)) return '0.6'
+  return '1.0'
+}
+
+const changefreqOf = (route) => (priorityOf(route) === '1.0' ? 'weekly' : 'monthly')
+
+const writeSitemap = async () => {
+  const today = new Date().toISOString().slice(0, 10)
+  const urls = ROUTES.map(
+    ({ route }) => `  <url>
+    <loc>${SITE_ORIGIN}${route}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>${changefreqOf(route)}</changefreq>
+    <priority>${priorityOf(route)}</priority>
+  </url>`,
+  ).join('\n')
+
+  await writeOutput(
+    'sitemap.xml',
+    `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls}
+</urlset>
+`,
+  )
+  log(`sitemap -> dist/sitemap.xml（${ROUTES.length} 条）`)
 }
 
 let server
@@ -118,11 +200,11 @@ try {
 
   const page = await browser.newPage()
   await page.setViewport({ width: 1440, height: 900 })
-  // 让页面按英文默认语言渲染，静态 HTML 与 sitemap / canonical 保持同一语言
-  await page.setExtraHTTPHeaders({ 'Accept-Language': 'en-US,en;q=0.9' })
 
-  for (const { route, file } of ROUTES) {
-    await page.goto(`http://localhost:${PORT}${route}?lang=en`, {
+  for (const { route, file, lang } of ROUTES) {
+    // 路径前缀已经决定语言，这里再声明一次 Accept-Language，保证首屏文案一致
+    await page.setExtraHTTPHeaders({ 'Accept-Language': `${lang},en;q=0.9` })
+    await page.goto(`http://localhost:${PORT}${route}?lang=${encodeURIComponent(lang)}`, {
       waitUntil: 'networkidle2',
       timeout: 60_000,
     })
@@ -131,6 +213,11 @@ try {
       .catch(() => {})
     // 等字体与首屏入场动画稳定，避免抓到空壳或闪烁中间态
     await new Promise((resolve) => setTimeout(resolve, 800))
+
+    const renderedLang = await page.evaluate(() => document.documentElement.lang)
+    if (renderedLang.toLowerCase() !== HTML_LANG[lang].toLowerCase()) {
+      log(`警告：${route} 渲染语言为 ${renderedLang}，期望 ${HTML_LANG[lang]}`)
+    }
 
     const raw = await page.content()
     const html = raw
@@ -143,9 +230,11 @@ try {
       throw new Error(`${route} 渲染结果过短（${html.length} 字符），疑似渲染失败`)
     }
 
-    await writeFile(path.join(DIST, file), html)
+    await writeOutput(file, html)
     log(`${route} -> dist/${file} (${Math.round(html.length / 1024)}KB)`)
   }
+
+  await writeSitemap()
 } catch (error) {
   console.warn(`[prerender] 预渲染失败，回退为 SPA 外壳：${error.message}`)
   await writeFallbacks()
