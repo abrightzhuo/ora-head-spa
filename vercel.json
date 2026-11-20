@@ -54,13 +54,15 @@
     { "src": "^/ru/membership/?$", "dest": "/ru/membership.html" },
     { "src": "^/ru/forum/?$", "dest": "/ru/forum.html" },
 
+    {
+      "src": "^/(?:(?:zh|zh-tw|es|fr|ja|ko|de|ru)/)?(?:admin|account|account-lite|forum-lite)/?$",
+      "dest": "/index.html",
+      "headers": { "X-Robots-Tag": "noindex, nofollow" }
+    },
+
     { "src": "^/(?!api/)(?!.*\\..*).*$", "dest": "/index.html" }
   ],
   "headers": [
-    {
-      "source": "/(admin|account|forum-lite)(.*)",
-      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
-    },
     {
       "source": "/api/(.*)",
       "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
