@@ -178,36 +178,39 @@ export function Header({
     <header className={`site-header ${scrolled ? 'is-scrolled' : ''}`}>
       <div className="site-header__inner">
         <BrandMark compact href={homeHref} />
-        {/* coming-soon 首页只保留 Q&A 入口，其它锚点在该页没有对应内容 */}
-        <nav
-          className={`desktop-nav${comingSoon ? ' desktop-nav--minimal' : ''}`}
-          aria-label={accessibility.navigation}
-        >
-          {!comingSoon && (
-            <>
-              {t.nav.map((item) => (
-                <a href={sectionHref(item.href)} key={item.href}>
-                  {item.label}
-                </a>
-              ))}
-              <a href={pageHref('/about')}>
-                {aboutLabel[locale]}
+        {/* coming-soon 首页只有 Q&A 一个入口，放在右侧操作区 */}
+        {!comingSoon && (
+          <nav
+            className="desktop-nav"
+            aria-label={accessibility.navigation}
+          >
+            {t.nav.map((item) => (
+              <a href={sectionHref(item.href)} key={item.href}>
+                {item.label}
               </a>
-              <a href={pageHref('/gift-cards')}>
-                {giftCardLabel[locale]}
-              </a>
-              <a href={pageHref('/membership')}>
-                {membershipLabel[locale]}
-              </a>
-            </>
-          )}
-          <a href={pageHref('/forum')}>
-            {forumLabel[locale]}
-          </a>
-        </nav>
-        {/* 语言切换与登录入口在 coming-soon 首页也保留 */}
+            ))}
+            <a href={pageHref('/about')}>
+              {aboutLabel[locale]}
+            </a>
+            <a href={pageHref('/gift-cards')}>
+              {giftCardLabel[locale]}
+            </a>
+            <a href={pageHref('/membership')}>
+              {membershipLabel[locale]}
+            </a>
+            <a href={pageHref('/forum')}>
+              {forumLabel[locale]}
+            </a>
+          </nav>
+        )}
         <div className="site-header__actions">
-          <LanguageSwitch />
+          {comingSoon ? (
+            <a className="header-forum-link" href={pageHref('/forum')}>
+              {forumLabel[locale]}
+            </a>
+          ) : (
+            <LanguageSwitch />
+          )}
           {user ? (
             <a
               className="customer-account-link"
