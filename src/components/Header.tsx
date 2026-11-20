@@ -203,7 +203,22 @@ export function Header({
             </a>
           </nav>
         )}
-        {!comingSoon && (
+        {comingSoon ? (
+          // coming-soon 首页只放 Q&A 与登录入口，且都指向简化版页面
+          <div className="site-header__actions site-header__actions--simple">
+            <a className="header-forum-link" href={pageHref('/forum-lite')}>
+              {forumLabel[locale]}
+            </a>
+            <a
+              className="customer-account-link"
+              href={pageHref('/account-lite')}
+              aria-label={customer.signIn}
+              title={customer.signIn}
+            >
+              <UserRound size={17} />
+            </a>
+          </div>
+        ) : (
           <div className="site-header__actions">
             <LanguageSwitch />
             {user ? (
@@ -312,6 +327,51 @@ export function Header({
         </div>
       </div>
       )}
+    </header>
+  )
+}
+
+/**
+ * 简化版页头：只有品牌标识 + Q&A + 登录入口。
+ * 供 /forum-lite、/account-lite 这类不引导到完整站导航的页面使用。
+ */
+export function SimpleHeader() {
+  const locale = useSiteStore((state) => state.locale)
+  const { user } = useCustomerAuth()
+  const [scrolled, setScrolled] = useState(false)
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 32)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  const customer = customerCopy[locale]
+  const homePath = localeHomePath(locale, siteHomePath())
+  const forumHref = localePath(locale, '/forum-lite')
+  const accountHref = localePath(locale, '/account-lite')
+
+  return (
+    <header
+      className={`site-header site-header--simple ${scrolled ? 'is-scrolled' : ''}`}
+    >
+      <div className="site-header__inner">
+        <BrandMark compact href={homePath} />
+        <div className="site-header__actions site-header__actions--simple">
+          <a className="header-forum-link" href={forumHref}>
+            {forumLabel[locale]}
+          </a>
+          <a
+            className="customer-account-link"
+            href={accountHref}
+            aria-label={user ? customer.account : customer.signIn}
+            title={user ? customer.account : customer.signIn}
+          >
+            <UserRound size={17} />
+          </a>
+        </div>
+      </div>
     </header>
   )
 }

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react'
 import { MessageCircleQuestion, Send } from 'lucide-react'
 import { GeoPrefix } from '../components/GeoPrefix'
-import { Header } from '../components/Header'
+import { Header, SimpleHeader } from '../components/Header'
 import { useCustomerAuth } from '../contexts/customerAuth'
 import { forumCopy } from '../forumCopy'
 import { siteHomePath } from '../lib/comingSoon'
@@ -35,7 +35,12 @@ const formatDay = (iso: string, locale: string) => {
   })
 }
 
-export default function Forum() {
+type ForumProps = {
+  /** lite：只保留品牌标识 + Q&A + 登录入口的简化页头 */
+  variant?: 'full' | 'lite'
+}
+
+export default function Forum({ variant = 'full' }: ForumProps = {}) {
   const locale = useSiteStore((state) => state.locale)
   const t = forumCopy[locale]
   const { session, user, loading: authLoading, openAuth } = useCustomerAuth()
@@ -121,10 +126,14 @@ export default function Forum() {
 
   return (
     <main className="forum-page">
-      <Header
-        actionHref={`${localeHomePath(locale, siteHomePath())}#booking`}
-        returnToHome
-      />
+      {variant === 'lite' ? (
+        <SimpleHeader />
+      ) : (
+        <Header
+          actionHref={`${localeHomePath(locale, siteHomePath())}#booking`}
+          returnToHome
+        />
+      )}
 
       {/* 与会员 / 礼品卡页共用同一张头图与标题位置 */}
       <section className="membership-hero">

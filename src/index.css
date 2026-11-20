@@ -799,6 +799,30 @@ h2 {
   transform: scaleX(1);
 }
 
+/* coming-soon 首页与简化版页面用的 Q&A 文字入口 */
+.header-forum-link {
+  position: relative;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+}
+
+.header-forum-link::after {
+  position: absolute;
+  right: 0;
+  bottom: -8px;
+  left: 0;
+  height: 1px;
+  content: '';
+  transform: scaleX(0);
+  background: var(--gold);
+  transition: transform 220ms ease;
+}
+
+.header-forum-link:hover::after {
+  transform: scaleX(1);
+}
+
 .site-header__actions {
   display: flex;
   align-items: center;
@@ -806,6 +830,18 @@ h2 {
   gap: 18px;
   /* 固定在最后一列：中间导航缺失时仍保持右对齐 */
   grid-column: -1;
+}
+
+/* 简化版页头（/forum-lite、/account-lite）：品牌标识 + Q&A + 登录入口 */
+.site-header--simple .site-header__inner {
+  /* 没有中间导航与语言切换，去掉多余的中间列 */
+  grid-template-columns: 1fr auto;
+}
+
+.site-header--simple .site-header__actions--simple {
+  gap: 22px;
+  /* 无汉堡菜单，回收右侧预留的间距 */
+  margin-right: 0;
 }
 
 .language-switch {
@@ -7984,6 +8020,17 @@ html.is-native-app body {
   max-width: 100%;
   overflow-x: clip;
   padding-bottom: calc(62px + env(safe-area-inset-bottom));
+}
+
+/* lite 页面不渲染移动端导航，不用为 tabbar 预留底部空间 */
+@media (max-width: 767px) {
+  html.is-lite-route body {
+    padding-bottom: 0;
+  }
+}
+
+html.is-native-app.is-lite-route body {
+  padding-bottom: 0;
 }
 
 html.is-native-app #root {

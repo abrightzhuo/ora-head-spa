@@ -79,6 +79,8 @@ export default function App() {
 
   // 去掉语言前缀后再做路由匹配：/es/about 与 /about 渲染同一个页面
   const path = stripLocale(pathname)
+  // 简化版页面：与完整站内容重复，不参与索引，也不渲染移动端导航
+  const isLite = path === '/forum-lite' || path === '/account-lite'
   const isHome = path === '/' || path === '/preview'
   // 首页的规范地址是 /preview（英文）或 /<slug>（其它语言）
   const publicRoute = isHome ? '/preview' : path
@@ -87,9 +89,14 @@ export default function App() {
       ? localePath(locale, publicRoute)
       : pathname
 
+  // lite 页面没有移动端导航，原生 App 下无需为它预留底部安全区
+  useEffect(() => {
+    document.documentElement.classList.toggle('is-lite-route', isLite)
+  }, [isLite])
+
   useEffect(() => {
     const current = metadata[locale]
-    const isForum = path === '/forum'
+    const isForum = path === '/forum' || path === '/forum-lite'
     const title = isForum
       ? forumTitle[locale]
       : path === '/about'
@@ -98,7 +105,7 @@ export default function App() {
           ? current.giftCards
           : path === '/membership'
             ? current.membership
-            : path === '/account'
+            : path === '/account' || path === '/account-lite'
               ? current.account
               : path.startsWith('/providers/')
                 ? current.provider
@@ -122,6 +129,13 @@ export default function App() {
     setMeta('property', 'og:url', `${window.location.origin}${canonicalPath}`)
     setMeta('name', 'twitter:title', title)
     setMeta('name', 'twitter:description', description)
+
+    // 简化版页面与完整站内容重复，不参与索引
+    if (isLite) {
+      setMeta('name', 'robots', 'noindex, nofollow')
+    } else {
+      document.head.querySelector('meta[name="robots"]')?.remove()
+    }
 
     let canonical = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]')
     if (!canonical) {
@@ -158,12 +172,16 @@ export default function App() {
       <AboutPage />
     ) : path === '/account' ? (
       <CustomerAccount />
+    ) : path === '/account-lite' ? (
+      <CustomerAccount simple />
     ) : path === '/gift-cards' ? (
       <GiftCards />
     ) : path === '/membership' ? (
       <Membership />
     ) : path === '/forum' ? (
       <Forum />
+    ) : path === '/forum-lite' ? (
+      <Forum variant="lite" />
     ) : path.startsWith('/providers/') ? (
       <ProviderProfile providerId={path.split('/')[2] ?? ''} />
     ) : (
@@ -198,7 +216,7 @@ export default function App() {
     <>
       {breadcrumbs && <JsonLd data={breadcrumbGraph(breadcrumbs)} id="breadcrumb" />}
       {page}
-      {path !== '/admin' && <MobileAppNav />}
+      {path !== '/admin' && !isLite && <MobileAppNav />}
     </>
   )
 }

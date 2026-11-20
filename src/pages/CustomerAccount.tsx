@@ -7,7 +7,7 @@ import {
   LogOut,
   UserRound,
 } from 'lucide-react'
-import { Header } from '../components/Header'
+import { Header, SimpleHeader } from '../components/Header'
 import { useCustomerAuth } from '../contexts/customerAuth'
 import { customerCopy } from '../customerCopy'
 import { siteHomePath } from '../lib/comingSoon'
@@ -69,7 +69,12 @@ const money = (cents: number, currency: string, locale: string) =>
     currency,
   }).format(cents / 100)
 
-export default function CustomerAccount() {
+type CustomerAccountProps = {
+  /** simple：只保留品牌标识 + Q&A + 登录入口的简化页头 */
+  simple?: boolean
+}
+
+export default function CustomerAccount({ simple = false }: CustomerAccountProps = {}) {
   const locale = useSiteStore((state) => state.locale)
   const t = customerCopy[locale]
   const { session, user, loading: authLoading, openAuth, signOut } =
@@ -211,11 +216,15 @@ export default function CustomerAccount() {
 
   return (
     <main className="customer-account-page">
-      <Header
-        actionHref={localeHomePath(locale, siteHomePath())}
-        actionLabel={t.backHome}
-        returnToHome
-      />
+      {simple ? (
+        <SimpleHeader />
+      ) : (
+        <Header
+          actionHref={localeHomePath(locale, siteHomePath())}
+          actionLabel={t.backHome}
+          returnToHome
+        />
+      )}
       <section className="customer-account-head">
         <div>
           <span><UserRound size={18} />{t.account}</span>

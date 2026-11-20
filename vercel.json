@@ -58,7 +58,7 @@
   ],
   "headers": [
     {
-      "source": "/(admin|account)(.*)",
+      "source": "/(admin|account|forum-lite)(.*)",
       "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
     },
     {
