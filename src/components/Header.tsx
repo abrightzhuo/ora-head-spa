@@ -178,31 +178,34 @@ export function Header({
     <header className={`site-header ${scrolled ? 'is-scrolled' : ''}`}>
       <div className="site-header__inner">
         <BrandMark compact href={homeHref} />
-        {!comingSoon && (
+        {/* coming-soon 首页只保留 Q&A 入口，其它锚点在该页没有对应内容 */}
         <nav
-          className="desktop-nav"
+          className={`desktop-nav${comingSoon ? ' desktop-nav--minimal' : ''}`}
           aria-label={accessibility.navigation}
         >
-          {t.nav.map((item) => (
-            <a href={sectionHref(item.href)} key={item.href}>
-              {item.label}
-            </a>
-          ))}
-            <a href={pageHref('/about')}>
-              {aboutLabel[locale]}
-            </a>
-            <a href={pageHref('/forum')}>
-              {forumLabel[locale]}
-            </a>
-            <a href={pageHref('/gift-cards')}>
-              {giftCardLabel[locale]}
-            </a>
+          {!comingSoon && (
+            <>
+              {t.nav.map((item) => (
+                <a href={sectionHref(item.href)} key={item.href}>
+                  {item.label}
+                </a>
+              ))}
+              <a href={pageHref('/about')}>
+                {aboutLabel[locale]}
+              </a>
+              <a href={pageHref('/gift-cards')}>
+                {giftCardLabel[locale]}
+              </a>
               <a href={pageHref('/membership')}>
                 {membershipLabel[locale]}
               </a>
+            </>
+          )}
+          <a href={pageHref('/forum')}>
+            {forumLabel[locale]}
+          </a>
         </nav>
-        )}
-        {!comingSoon && (
+        {/* 语言切换与登录入口在 coming-soon 首页也保留 */}
         <div className="site-header__actions">
           <LanguageSwitch />
           {user ? (
@@ -225,29 +228,32 @@ export function Header({
               <UserRound size={17} />
             </button>
           )}
-          <a
-            className="header-book"
-              href={actionHref}
-              onClick={openBooking}
-          >
-              {actionLabel ?? t.book}
-            <ArrowUpRight size={15} />
-          </a>
-          <button
-            className="menu-button"
-            type="button"
-            onClick={() => setMenuOpen((value) => !value)}
-            aria-expanded={menuOpen}
-            aria-label={
-              menuOpen
-                ? accessibility.closeMenu
-                : accessibility.openMenu
-            }
-          >
-            {menuOpen ? <X /> : <Menu />}
-          </button>
+          {!comingSoon && (
+            <>
+              <a
+                className="header-book"
+                  href={actionHref}
+                  onClick={openBooking}
+              >
+                  {actionLabel ?? t.book}
+                <ArrowUpRight size={15} />
+              </a>
+              <button
+                className="menu-button"
+                type="button"
+                onClick={() => setMenuOpen((value) => !value)}
+                aria-expanded={menuOpen}
+                aria-label={
+                  menuOpen
+                    ? accessibility.closeMenu
+                    : accessibility.openMenu
+                }
+              >
+                {menuOpen ? <X /> : <Menu />}
+              </button>
+            </>
+          )}
         </div>
-        )}
       </div>
       {!comingSoon && (
       <div className={`mobile-menu ${menuOpen ? 'is-open' : ''}`}>
@@ -267,18 +273,18 @@ export function Header({
               <span>04</span>
               {aboutLabel[locale]}
             </a>
-            <a href={pageHref('/forum')} onClick={closeMenu}>
-              <span>05</span>
-              {forumLabel[locale]}
-            </a>
             <a href={pageHref('/gift-cards')} onClick={closeMenu}>
-              <span>06</span>
+              <span>05</span>
               {giftCardLabel[locale]}
             </a>
               <a href={pageHref('/membership')} onClick={closeMenu}>
-                <span>07</span>
+                <span>06</span>
                 {membershipLabel[locale]}
               </a>
+            <a href={pageHref('/forum')} onClick={closeMenu}>
+              <span>07</span>
+              {forumLabel[locale]}
+            </a>
           {user ? (
             <a href={`/account?lang=${locale}`} onClick={closeMenu}>
                 <span>08</span>
