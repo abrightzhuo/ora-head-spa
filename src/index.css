@@ -799,36 +799,12 @@ h2 {
   transform: scaleX(1);
 }
 
-/* coming-soon 首页把 Q&A 放在右上角（原语言切换的位置） */
-.header-forum-link {
-  position: relative;
-  font-size: 12px;
-  font-weight: 400;
-  letter-spacing: 0.08em;
-}
-
-.header-forum-link::after {
-  position: absolute;
-  right: 0;
-  bottom: -8px;
-  left: 0;
-  height: 1px;
-  content: '';
-  transform: scaleX(0);
-  background: var(--gold);
-  transition: transform 220ms ease;
-}
-
-.header-forum-link:hover::after {
-  transform: scaleX(1);
-}
-
 .site-header__actions {
   display: flex;
   align-items: center;
   justify-content: flex-end;
   gap: 18px;
-  /* 固定在最后一列：coming-soon 首页没有中间导航时仍然靠右 */
+  /* 固定在最后一列：中间导航缺失时仍保持右对齐 */
   grid-column: -1;
 }
 

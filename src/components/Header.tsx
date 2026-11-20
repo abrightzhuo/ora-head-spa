@@ -178,7 +178,7 @@ export function Header({
     <header className={`site-header ${scrolled ? 'is-scrolled' : ''}`}>
       <div className="site-header__inner">
         <BrandMark compact href={homeHref} />
-        {/* coming-soon 首页只有 Q&A 一个入口，放在右侧操作区 */}
+        {/* coming-soon 首页只保留品牌标识，导航与登录入口都不显示 */}
         {!comingSoon && (
           <nav
             className="desktop-nav"
@@ -203,60 +203,52 @@ export function Header({
             </a>
           </nav>
         )}
-        <div className="site-header__actions">
-          {comingSoon ? (
-            <a className="header-forum-link" href={pageHref('/forum')}>
-              {forumLabel[locale]}
-            </a>
-          ) : (
+        {!comingSoon && (
+          <div className="site-header__actions">
             <LanguageSwitch />
-          )}
-          {user ? (
-            <a
-              className="customer-account-link"
-              href={`/account?lang=${locale}`}
-              aria-label={customer.account}
-              title={customer.account}
-            >
-              <UserRound size={17} />
-            </a>
-          ) : (
-            <button
-              className="customer-account-link"
-              type="button"
-              onClick={() => openAuth('sign-in')}
-              aria-label={customer.signIn}
-              title={customer.signIn}
-            >
-              <UserRound size={17} />
-            </button>
-          )}
-          {!comingSoon && (
-            <>
+            {user ? (
               <a
-                className="header-book"
-                  href={actionHref}
-                  onClick={openBooking}
+                className="customer-account-link"
+                href={`/account?lang=${locale}`}
+                aria-label={customer.account}
+                title={customer.account}
               >
-                  {actionLabel ?? t.book}
-                <ArrowUpRight size={15} />
+                <UserRound size={17} />
               </a>
+            ) : (
               <button
-                className="menu-button"
+                className="customer-account-link"
                 type="button"
-                onClick={() => setMenuOpen((value) => !value)}
-                aria-expanded={menuOpen}
-                aria-label={
-                  menuOpen
-                    ? accessibility.closeMenu
-                    : accessibility.openMenu
-                }
+                onClick={() => openAuth('sign-in')}
+                aria-label={customer.signIn}
+                title={customer.signIn}
               >
-                {menuOpen ? <X /> : <Menu />}
+                <UserRound size={17} />
               </button>
-            </>
-          )}
-        </div>
+            )}
+            <a
+              className="header-book"
+                href={actionHref}
+                onClick={openBooking}
+            >
+                {actionLabel ?? t.book}
+              <ArrowUpRight size={15} />
+            </a>
+            <button
+              className="menu-button"
+              type="button"
+              onClick={() => setMenuOpen((value) => !value)}
+              aria-expanded={menuOpen}
+              aria-label={
+                menuOpen
+                  ? accessibility.closeMenu
+                  : accessibility.openMenu
+              }
+            >
+              {menuOpen ? <X /> : <Menu />}
+            </button>
+          </div>
+        )}
       </div>
       {!comingSoon && (
       <div className={`mobile-menu ${menuOpen ? 'is-open' : ''}`}>
