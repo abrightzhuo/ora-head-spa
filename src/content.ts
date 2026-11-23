@@ -5,6 +5,9 @@ export const images = {
   interiorLounge: '/images/interior-02.jpg',
 }
 
+/** 门店地址：美国地址格式各语言通用，不做翻译 */
+export const storeAddress = '649 Main St, Waltham, MA 02451'
+
 export type ServiceItem = {
   number: string
   title: string
@@ -221,7 +224,7 @@ export const baseCopy: Record<'zh' | 'en', Copy> = {
     book: 'Book a Ritual',
     hero: {
       eyebrow: 'HERBAL SCALP & SKIN WELLNESS',
-      title: 'Relax Refresh Renew',
+      title: 'Relax. Refresh. Renew.',
       italic: 'Breathe at the roots\nand find yourself again',
       description:
         'A quiet pause in a busy day. At ORA Toucheer Head Spa, take a moment to close your eyes, let your shoulders drop, and leave the rush of the day at the door. With gentle botanical scalp care, and a quiet space to rest, you can take a breath and let the tension of the day ease.',

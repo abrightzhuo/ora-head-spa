@@ -1037,6 +1037,18 @@ h2 {
   line-height: 1.1;
 }
 
+.hero__address {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 44px;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  line-height: 1.6;
+  text-transform: uppercase;
+}
+
 .text-link {
   display: inline-flex;
   align-items: center;
@@ -8410,6 +8422,13 @@ html[data-coming-soon='true'] .hero {
 .about-page__hero::after {
   position: absolute;
   background:
+    /* 黄昏色层：天空偏紫、山谷偏蓝，配合山景图的冷调 */
+    linear-gradient(
+      180deg,
+      rgba(96, 82, 138, 0.30) 0%,
+      rgba(70, 70, 132, 0.22) 46%,
+      rgba(34, 44, 86, 0.34) 100%
+    ),
     linear-gradient(
       90deg,
       rgba(22, 18, 13, 0.74) 0%,
