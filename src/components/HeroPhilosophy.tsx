@@ -45,7 +45,7 @@ export function Hero() {
           </div>
         )}
         <p className="hero__address reveal-up delay-3">
-          <MapPin size={13} aria-hidden="true" />
+          <MapPin size={14} aria-hidden="true" />
           {storeAddress}
         </p>
       </div>
