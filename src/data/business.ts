@@ -126,7 +126,7 @@ export const BUSINESS = {
   },
   sameAs: [] as string[],
   images: [
-    '/images/about/story-hero.jpg',
+    '/images/about/story-hero-autumn.jpg',
     '/images/interior-01.jpg',
     '/images/interior-02.jpg',
   ],

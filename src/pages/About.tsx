@@ -98,7 +98,7 @@ const english: AboutCopy = {
       eyebrow: 'Our Brand Journey',
       title: 'A Tradition That Continues',
       body: [
-        'Established in 1998, TOUCHEER has grown and flourished over the decades, expanding to more than 10,000 locations across China and extending its presence internationally to countries including Singapore, the United States, Canada, Malaysia, and beyond. Through the wisdom of botanical wellness, TOUCHEER brings people around the world a more relaxed, balanced, and healthier way of life.',
+        'Established in 1998, TOUCHEER (the original name Toudaotang) has grown and flourished over the decades, expanding to more than 10,000 locations across China and extending its presence internationally to countries including Singapore, the United States, Canada, Malaysia, and beyond. Through the wisdom of botanical wellness, TOUCHEER brings people around the world a more relaxed, balanced, and healthier way of life.',
         'Today, I am proud to bring this time-honored herbal care tradition to Waltham, Massachusetts, through ORA.',
       ],
       stats: [
@@ -603,7 +603,7 @@ export default function AboutPage() {
       <Header actionHref={bookHref} returnToHome />
 
       <section className="about-page__hero">
-        <img src="/images/about/story-hero.jpg" alt="" />
+        <img src="/images/about/story-hero-autumn.jpg" alt="" />
         <div className="about-page__hero-inner">
           <p className="eyebrow eyebrow--light">{t.hero.eyebrow}</p>
           <h1>
