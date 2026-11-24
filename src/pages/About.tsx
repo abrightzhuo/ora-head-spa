@@ -99,7 +99,7 @@ const english: AboutCopy = {
       title: 'A Tradition That Continues',
       body: [
         'Established in 1998, TOUCHEER (the original name Toudaotang) has grown and flourished over the decades, expanding to more than 10,000 locations across China and extending its presence internationally to countries including Singapore, the United States, Canada, Malaysia, and beyond. Through the wisdom of botanical wellness, TOUCHEER brings people around the world a more relaxed, balanced, and healthier way of life.',
-        'Today, I am proud to bring this time-honored herbal care tradition to Waltham, Massachusetts, through ORA.',
+        'Today, I am proud to bring this time-honored herbal care tradition to Waltham, Massachusetts, through ORA TOUCHEER.',
       ],
       stats: [
         { value: '1998', label: 'Established' },
@@ -153,7 +153,7 @@ const simplifiedChinese: AboutCopy = {
       eyebrow: '品牌历程',
       title: '一份延续至今的传承',
       body: [
-        'TOUCHEER 创立于 1998 年，数十年间稳步成长，在中国发展出超过 10,000 家门店，并将脚步延伸至新加坡、美国、加拿大、马来西亚等地。以植物养护的智慧，TOUCHEER 为世界各地的人们带来更放松、更平衡、更健康的生活方式。',
+        'TOUCHEER（原名头道汤）创立于 1998 年，数十年间稳步成长，在中国发展出超过 10,000 家门店，并将脚步延伸至新加坡、美国、加拿大、马来西亚等地。以植物养护的智慧，TOUCHEER 为世界各地的人们带来更放松、更平衡、更健康的生活方式。',
         '今天，我很荣幸把这份传承已久的草本养护传统带到马萨诸塞州 Waltham，并以 ORA 之名与你相遇。',
       ],
       stats: [
@@ -208,7 +208,7 @@ const traditionalChinese: AboutCopy = {
       eyebrow: '品牌歷程',
       title: '一份延續至今的傳承',
       body: [
-        'TOUCHEER 創立於 1998 年，數十年間穩步成長，在中國發展出超過 10,000 家門店，並將腳步延伸至新加坡、美國、加拿大、馬來西亞等地。以植物養護的智慧，TOUCHEER 為世界各地的人們帶來更放鬆、更平衡、更健康的生活方式。',
+        'TOUCHEER（原名頭道湯）創立於 1998 年，數十年間穩步成長，在中國發展出超過 10,000 家門店，並將腳步延伸至新加坡、美國、加拿大、馬來西亞等地。以植物養護的智慧，TOUCHEER 為世界各地的人們帶來更放鬆、更平衡、更健康的生活方式。',
         '今天，我很榮幸把這份傳承已久的草本養護傳統帶到麻薩諸塞州 Waltham，並以 ORA 之名與你相遇。',
       ],
       stats: [
@@ -263,7 +263,7 @@ const spanish: AboutCopy = {
       eyebrow: 'Nuestra trayectoria',
       title: 'Una tradición que continúa',
       body: [
-        'Fundada en 1998, TOUCHEER ha crecido durante décadas hasta superar los 10.000 establecimientos en China y expandirse a Singapur, Estados Unidos, Canadá, Malasia y otros países. A través de la sabiduría del bienestar botánico, TOUCHEER acerca a personas de todo el mundo una vida más relajada, equilibrada y saludable.',
+        'Fundada en 1998, TOUCHEER (el nombre original Toudaotang) ha crecido durante décadas hasta superar los 10.000 establecimientos en China y expandirse a Singapur, Estados Unidos, Canadá, Malasia y otros países. A través de la sabiduría del bienestar botánico, TOUCHEER acerca a personas de todo el mundo una vida más relajada, equilibrada y saludable.',
         'Hoy tengo el orgullo de traer esta tradición de cuidado herbal a Waltham, Massachusetts, a través de ORA.',
       ],
       stats: [
@@ -318,7 +318,7 @@ const french: AboutCopy = {
       eyebrow: 'Notre parcours',
       title: 'Une tradition qui perdure',
       body: [
-        'Fondée en 1998, TOUCHEER s’est développée au fil des décennies jusqu’à compter plus de 10 000 établissements en Chine, et s’est implantée à Singapour, aux États-Unis, au Canada, en Malaisie et ailleurs. Par la sagesse du bien-être végétal, TOUCHEER offre au monde une vie plus détendue, plus équilibrée et plus saine.',
+        'Fondée en 1998, TOUCHEER (nom d’origine Toudaotang) s’est développée au fil des décennies jusqu’à compter plus de 10 000 établissements en Chine, et s’est implantée à Singapour, aux États-Unis, au Canada, en Malaisie et ailleurs. Par la sagesse du bien-être végétal, TOUCHEER offre au monde une vie plus détendue, plus équilibrée et plus saine.',
         'C’est avec fierté que j’apporte aujourd’hui cette tradition de soin à Waltham, dans le Massachusetts, à travers ORA.',
       ],
       stats: [
@@ -373,7 +373,7 @@ const japanese: AboutCopy = {
       eyebrow: 'ブランドの歩み',
       title: '受け継がれる伝統',
       body: [
-        'TOUCHEERは1998年に設立され、数十年のあいだに中国で10,000店舗以上へと成長し、シンガポール、アメリカ、カナダ、マレーシアなど海外にも展開してきました。植物のウェルネスの知恵を通じて、世界の人々に、よりリラックスした、バランスのとれた健やかな暮らしを届けています。',
+        'TOUCHEER（旧称：Toudaotang）は1998年に設立され、数十年のあいだに中国で10,000店舗以上へと成長し、シンガポール、アメリカ、カナダ、マレーシアなど海外にも展開してきました。植物のウェルネスの知恵を通じて、世界の人々に、よりリラックスした、バランスのとれた健やかな暮らしを届けています。',
         'そして今日、この長く受け継がれてきた植物ケアの伝統を、ORAとしてマサチューセッツ州ウォルサムにお届けできることを誇りに思います。',
       ],
       stats: [
@@ -428,7 +428,7 @@ const korean: AboutCopy = {
       eyebrow: '브랜드 여정',
       title: '이어지는 전통',
       body: [
-        'TOUCHEER는 1998년에 설립되어 수십 년간 성장하며 중국 내 10,000개 이상의 매장을 운영하고, 싱가포르·미국·캐나다·말레이시아 등 해외로 영역을 넓혀 왔습니다. 식물 웰니스의 지혜로 TOUCHEER는 전 세계 사람들에게 더 편안하고 균형 잡힌 건강한 삶을 전합니다.',
+        'TOUCHEER(원래 이름 Toudaotang)는 1998년에 설립되어 수십 년간 성장하며 중국 내 10,000개 이상의 매장을 운영하고, 싱가포르·미국·캐나다·말레이시아 등 해외로 영역을 넓혀 왔습니다. 식물 웰니스의 지혜로 TOUCHEER는 전 세계 사람들에게 더 편안하고 균형 잡힌 건강한 삶을 전합니다.',
         '오늘 저는 이 오랜 허브 케어 전통을 ORA라는 이름으로 매사추세츠 월섬에 전하게 되어 자랑스럽게 생각합니다.',
       ],
       stats: [
@@ -483,7 +483,7 @@ const german: AboutCopy = {
       eyebrow: 'Unser Weg',
       title: 'Eine Tradition, die weiterlebt',
       body: [
-        '1998 gegründet, ist TOUCHEER über die Jahrzehnte auf mehr als 10.000 Standorte in China gewachsen und international in Singapur, den USA, Kanada, Malaysia und weiteren Ländern vertreten. Mit der Weisheit pflanzlichen Wohlbefindens schenkt TOUCHEER Menschen weltweit ein entspannteres, ausgeglicheneres und gesünderes Leben.',
+        '1998 gegründet, ist TOUCHEER (ursprünglich Toudaotang) über die Jahrzehnte auf mehr als 10.000 Standorte in China gewachsen und international in Singapur, den USA, Kanada, Malaysia und weiteren Ländern vertreten. Mit der Weisheit pflanzlichen Wohlbefindens schenkt TOUCHEER Menschen weltweit ein entspannteres, ausgeglicheneres und gesünderes Leben.',
         'Heute bin ich stolz, diese lange gepflegte Tradition der Kräuterpflege mit ORA nach Waltham, Massachusetts, zu bringen.',
       ],
       stats: [
@@ -538,7 +538,7 @@ const russian: AboutCopy = {
       eyebrow: 'Путь бренда',
       title: 'Традиция, которая продолжается',
       body: [
-        'Основанная в 1998 году, TOUCHEER за десятилетия выросла до более чем 10 000 точек в Китае и вышла на международный уровень — Сингапур, США, Канада, Малайзия и другие страны. Через мудрость растительного благополучия TOUCHEER дарит людям по всему миру более спокойную, сбалансированную и здоровую жизнь.',
+        'Основанная в 1998 году, TOUCHEER (первоначальное название — Toudaotang) за десятилетия выросла до более чем 10 000 точек в Китае и вышла на международный уровень — Сингапур, США, Канада, Малайзия и другие страны. Через мудрость растительного благополучия TOUCHEER дарит людям по всему миру более спокойную, сбалансированную и здоровую жизнь.',
         'Сегодня я с гордостью привожу эту давнюю традицию травяного ухода в Уолтем, штат Массачусетс, вместе с ORA.',
       ],
       stats: [
