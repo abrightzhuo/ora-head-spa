@@ -1,0 +1,20 @@
+# ai.txt — ORA Head Spa
+# 声明本站内容可被 AI agent 抓取、检索与引用
+
+Site: https://www.myoraspa.com
+Name: ORA Head Spa
+Description: ORA is a herbal head spa in Waltham, Massachusetts. Botanical scalp and skin rituals, one-to-one care and a quiet space — choose a 60–90 minute session and book online.
+Updated: 2026-11-24
+
+User-agent: *
+Allow: /
+Disallow: /admin/
+
+Content-Usage: search, cite, summarize
+Training: allowed
+Attribution: required
+Canonical: https://www.myoraspa.com/preview
+Llms: https://www.myoraspa.com/llms.txt
+Sitemap: https://www.myoraspa.com/sitemap.xml
+
+# 由 GEO Patch 生成 · 2026-11-24 · 可直接编辑

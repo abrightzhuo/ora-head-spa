@@ -1,0 +1,45 @@
+{
+  "name": "ORA Head Spa",
+  "url": "https://www.myoraspa.com",
+  "description": "ORA is a herbal head spa in Waltham, Massachusetts. Botanical scalp and skin rituals, one-to-one care and a quiet space — choose a 60–90 minute session and book online.",
+  "language": "en",
+  "updated": "2026-11-24",
+  "topics": [
+    "Balance begins at the roots",
+    "ORA at a glance",
+    "Three rhythms. One exhale.",
+    "A five-sense journey",
+    "Where light falls and time softens",
+    "Quiet words from our guests",
+    "Head spa FAQ — Waltham, MA",
+    "Make room for quiet"
+  ],
+  "keyPages": [
+    {
+      "title": "About Us",
+      "url": "https://www.myoraspa.com/about"
+    },
+    {
+      "title": "Gift Cards",
+      "url": "https://www.myoraspa.com/gift-cards"
+    },
+    {
+      "title": "Membership",
+      "url": "https://www.myoraspa.com/membership"
+    },
+    {
+      "title": "Q&A",
+      "url": "https://www.myoraspa.com/forum"
+    },
+    {
+      "title": "Home",
+      "url": "https://www.myoraspa.com/"
+    },
+    {
+      "title": "Account",
+      "url": "https://www.myoraspa.com/account"
+    }
+  ],
+  "sameAs": [],
+  "generator": "GEO Patch"
+}
