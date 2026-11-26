@@ -3,7 +3,7 @@
 > ORA is a herbal head spa in Waltham, Massachusetts. Botanical scalp and skin rituals, one-to-one care and a quiet space — choose a 60–90 minute session and book online.
 
 Source: https://www.myoraspa.com/preview
-Updated: 2026-11-24
+Updated: 2026-11-26
 
 # Head Spa in Waltham, MA — Relax. Refresh. Renew.Breathe at the roots and find yourself again
 
@@ -131,4 +131,4 @@ To protect each guest’s reserved time and our providers’ schedules, the foll
 
 No charge is made when booking. Square securely stores this payment method and ORA may charge only the applicable fee after staff review.
 
-<!-- 由 GEO Patch 生成 · 2026-11-24 -->
+<!-- 由 GEO Patch 生成 · 2026-11-26 -->
