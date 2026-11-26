@@ -97,7 +97,8 @@ const offerNodes = (): JsonLd[] => [
   {
     '@type': 'Offer',
     '@id': `${BUSINESS.url}/#offer-gift-card`,
-    name: BUSINESS.giftCard.name,
+    // 同会员：结构化数据用短标签，产品全名（ORA Gift Card）保留给页面与对外文案
+    name: 'Gift Cards',
     description: BUSINESS.giftCard.description,
     url: absoluteUrl(BUSINESS.giftCard.url),
     priceCurrency: 'USD',
