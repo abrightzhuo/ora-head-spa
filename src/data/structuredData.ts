@@ -82,7 +82,8 @@ const offerNodes = (): JsonLd[] => [
   {
     '@type': 'Offer',
     '@id': `${BUSINESS.url}/#offer-membership`,
-    name: BUSINESS.membership.name,
+    // 结构化数据里用简短标签，产品全名（ORA Annual Membership）留给页面与对外文案
+    name: 'Membership',
     description: BUSINESS.membership.description,
     url: absoluteUrl(BUSINESS.membership.url),
     price: BUSINESS.membership.price.toFixed(2),
@@ -141,7 +142,7 @@ export const businessNode = (): JsonLd => {
     ],
     hasOfferCatalog: {
       '@type': 'OfferCatalog',
-      name: 'Head spa rituals',
+      name: 'Rituals',
       itemListElement: SERVICE_FACTS.map((service) => ({
         '@type': 'Offer',
         itemOffered: { '@id': serviceId(service.code) },
