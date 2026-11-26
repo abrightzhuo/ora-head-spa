@@ -163,7 +163,7 @@ export const businessNode = (): JsonLd => {
           'https://schema.org/MobileWebPlatform',
         ],
       },
-      result: { '@type': 'Reservation', name: 'Head spa appointment' },
+      result: { '@type': 'Reservation', name: 'appointment' },
     },
   }
 
