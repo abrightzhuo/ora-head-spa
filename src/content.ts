@@ -8,6 +8,9 @@ export const images = {
 /** 门店地址：美国地址格式各语言通用，不做翻译 */
 export const storeAddress = '649 Main St, Waltham, MA 02451'
 
+/** 门店地址对应的 Google 地图检索链接（地址改动时会自动跟随） */
+export const storeAddressMapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(storeAddress)}`
+
 export type ServiceItem = {
   number: string
   title: string

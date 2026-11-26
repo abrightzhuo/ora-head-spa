@@ -1,5 +1,5 @@
 import { ArrowDown, Asterisk, Droplets, Flower2, MapPin, ScanFace, Wind } from 'lucide-react'
-import { images, storeAddress } from '../content'
+import { images, storeAddress, storeAddressMapUrl } from '../content'
 import { isComingSoon } from '../lib/comingSoon'
 import { copy } from '../localizedContent'
 import { useSiteStore } from '../store/useSiteStore'
@@ -44,10 +44,15 @@ export function Hero() {
             </a>
           </div>
         )}
-        <p className="hero__address reveal-up delay-3">
+        <a
+          className="hero__address reveal-up delay-3"
+          href={storeAddressMapUrl}
+          target="_blank"
+          rel="noreferrer noopener"
+        >
           <MapPin size={14} aria-hidden="true" />
           {storeAddress}
-        </p>
+        </a>
       </div>
       <div className="hero__side-note">{t.note}</div>
     </section>
