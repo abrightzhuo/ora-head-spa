@@ -677,7 +677,7 @@ export default function AboutPage({ simple = false }: { simple?: boolean } = {})
         </section>
       )}
 
-      <Footer />
+      <Footer simple={simple} />
     </main>
   )
 }

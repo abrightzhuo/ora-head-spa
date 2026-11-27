@@ -17,7 +17,7 @@ const mobileNavigationLabel: Record<Locale, string> = {
   ru: 'Мобильная навигация',
 }
 
-export function Footer() {
+export function Footer({ simple = false }: { simple?: boolean } = {}) {
   const locale = useSiteStore((state) => state.locale)
   const t = copy[locale]
   const homePath = localeHomePath(locale, siteHomePath())
@@ -28,15 +28,18 @@ export function Footer() {
   return (
     <footer className="footer">
       <div className="section-shell footer__inner">
-        <BrandMark light />
+        {/* 简化版：品牌标识回到站点根地址，且不展示完整站的栏目导航 */}
+        <BrandMark light href={simple ? localeHomePath(locale, '/') : undefined} />
         <p>{t.footer.statement}</p>
-        <div className="footer__links">
-          {t.nav.map((item) => (
-            <a href={sectionHref(item.href)} key={item.href}>
-              {item.label}
-            </a>
-          ))}
-        </div>
+        {!simple && (
+          <div className="footer__links">
+            {t.nav.map((item) => (
+              <a href={sectionHref(item.href)} key={item.href}>
+                {item.label}
+              </a>
+            ))}
+          </div>
+        )}
         <small>{t.footer.rights}</small>
       </div>
     </footer>
