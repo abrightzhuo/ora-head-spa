@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { ArrowUpRight } from 'lucide-react'
 import { Footer } from '../components/FooterMobile'
 import { GeoPrefix } from '../components/GeoPrefix'
-import { Header } from '../components/Header'
+import { Header, SimpleHeader } from '../components/Header'
 import { siteHomePath } from '../lib/comingSoon'
 import { localeHomePath } from '../lib/localeRouting'
 import { useSiteStore, type Locale } from '../store/useSiteStore'
@@ -577,7 +577,7 @@ const aboutCopy: Record<Locale, AboutCopy> = {
   ru: russian,
 }
 
-export default function AboutPage() {
+export default function AboutPage({ simple = false }: { simple?: boolean } = {}) {
   const locale = useSiteStore((state) => state.locale)
   const t = aboutCopy[locale]
   const bookHref = `${localeHomePath(locale, siteHomePath())}#booking`
@@ -600,7 +600,11 @@ export default function AboutPage() {
 
   return (
     <main className="about-page">
-      <Header actionHref={bookHref} returnToHome />
+      {simple ? (
+        <SimpleHeader />
+      ) : (
+        <Header actionHref={bookHref} returnToHome />
+      )}
 
       <section className="about-page__hero">
         <img src="/images/about/story-hero-autumn.jpg" alt="" />
@@ -651,24 +655,27 @@ export default function AboutPage() {
         })}
       </div>
 
-      <section className="about-closing">
-        <div className="about-closing__inner observe-reveal">
-          <p className="eyebrow eyebrow--light">{t.closing.eyebrow}</p>
-          <h2>{t.closing.title}</h2>
-          <p>{t.closing.body}</p>
-          <a className="about-closing__cta" href={bookHref}>
-            {t.closing.cta}
-            <ArrowUpRight size={16} />
-          </a>
-        </div>
-        <div className="about-closing__visual">
-          <img
-            src="/images/about/miao-portrait.jpg"
-            alt={t.closing.imageAlt}
-            loading="lazy"
-          />
-        </div>
-      </section>
+      {/* 简化版不展示 More Than Hair Care / Book your ritual 结尾区块 */}
+      {!simple && (
+        <section className="about-closing">
+          <div className="about-closing__inner observe-reveal">
+            <p className="eyebrow eyebrow--light">{t.closing.eyebrow}</p>
+            <h2>{t.closing.title}</h2>
+            <p>{t.closing.body}</p>
+            <a className="about-closing__cta" href={bookHref}>
+              {t.closing.cta}
+              <ArrowUpRight size={16} />
+            </a>
+          </div>
+          <div className="about-closing__visual">
+            <img
+              src="/images/about/miao-portrait.jpg"
+              alt={t.closing.imageAlt}
+              loading="lazy"
+            />
+          </div>
+        </section>
+      )}
 
       <Footer />
     </main>

@@ -204,8 +204,11 @@ export function Header({
           </nav>
         )}
         {comingSoon ? (
-          // coming-soon 首页只放 Q&A 与登录入口，且都指向简化版页面
+          // coming-soon 首页只放 About Us / Q&A 与登录入口，且都指向简化版页面
           <div className="site-header__actions site-header__actions--simple">
+            <a className="header-forum-link" href={pageHref('/about-lite')}>
+              {aboutLabel[locale]}
+            </a>
             <a className="header-forum-link" href={pageHref('/forum-lite')}>
               {forumLabel[locale]}
             </a>

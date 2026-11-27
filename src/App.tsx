@@ -80,7 +80,10 @@ export default function App() {
   // 去掉语言前缀后再做路由匹配：/es/about 与 /about 渲染同一个页面
   const path = stripLocale(pathname)
   // 简化版页面：与完整站内容重复，不参与索引，也不渲染移动端导航
-  const isLite = path === '/forum-lite' || path === '/account-lite'
+  const isLite =
+    path === '/forum-lite' ||
+    path === '/account-lite' ||
+    path === '/about-lite'
   const isHome = path === '/' || path === '/preview'
   // 首页的规范地址是 /preview（英文）或 /<slug>（其它语言）
   const publicRoute = isHome ? '/preview' : path
@@ -99,7 +102,7 @@ export default function App() {
     const isForum = path === '/forum' || path === '/forum-lite'
     const title = isForum
       ? forumTitle[locale]
-      : path === '/about'
+      : path === '/about' || path === '/about-lite'
         ? current.about
         : path === '/gift-cards'
           ? current.giftCards
@@ -170,6 +173,8 @@ export default function App() {
       <Admin />
     ) : path === '/about' ? (
       <AboutPage />
+    ) : path === '/about-lite' ? (
+      <AboutPage simple />
     ) : path === '/account' ? (
       <CustomerAccount />
     ) : path === '/account-lite' ? (
