@@ -335,8 +335,8 @@ export function Header({
 }
 
 /**
- * 简化版页头：只有品牌标识 + Q&A + 登录入口。
- * 供 /forum-lite、/account-lite 这类不引导到完整站导航的页面使用。
+ * 简化版页头：品牌标识 + About Us + Q&A + 登录入口。
+ * 供 /forum-lite、/account-lite、/about-lite 这类不引导到完整站导航的页面使用。
  */
 export function SimpleHeader() {
   const locale = useSiteStore((state) => state.locale)
@@ -353,6 +353,7 @@ export function SimpleHeader() {
   const customer = customerCopy[locale]
   // lite 页头不跟随 coming-soon 的 /preview：品牌标识始终回到站点根地址
   const homePath = localeHomePath(locale, '/')
+  const aboutHref = localePath(locale, '/about-lite')
   const forumHref = localePath(locale, '/forum-lite')
   const accountHref = localePath(locale, '/account-lite')
 
@@ -363,6 +364,9 @@ export function SimpleHeader() {
       <div className="site-header__inner">
         <BrandMark compact href={homePath} />
         <div className="site-header__actions site-header__actions--simple">
+          <a className="header-forum-link" href={aboutHref}>
+            {aboutLabel[locale]}
+          </a>
           <a className="header-forum-link" href={forumHref}>
             {forumLabel[locale]}
           </a>
