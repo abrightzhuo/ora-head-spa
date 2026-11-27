@@ -269,7 +269,9 @@ body.auth-modal-open {
 }
 
 .customer-account-page {
-  min-height: 100svh;
+  /* 多留 1px，使滚动条在 loading / 加载完成之间始终存在；
+     否则视口宽度变化会让居中页头（上限 1420px）连同 logo 横移半个滚动条宽度。 */
+  min-height: calc(100svh + 1px);
   color: var(--ink);
   background: #f8f4ed;
 }
