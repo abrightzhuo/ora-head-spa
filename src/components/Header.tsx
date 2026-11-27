@@ -348,7 +348,8 @@ export function SimpleHeader() {
   }, [])
 
   const customer = customerCopy[locale]
-  const homePath = localeHomePath(locale, siteHomePath())
+  // lite 页头不跟随 coming-soon 的 /preview：品牌标识始终回到站点根地址
+  const homePath = localeHomePath(locale, '/')
   const forumHref = localePath(locale, '/forum-lite')
   const accountHref = localePath(locale, '/account-lite')
 

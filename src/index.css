@@ -285,11 +285,15 @@ body.auth-modal-open {
   color: var(--olive);
 }
 
-.customer-account-page .site-header .brand-mark__img--color {
+/* 账户页页头始终是浅底：未滚动时也要用彩色 logo，避免白 logo 隐形。
+   带上 :not(.is-scrolled) / .is-scrolled 提高优先级，压过后面的通用规则。 */
+.customer-account-page .site-header:not(.is-scrolled) .brand-mark__img--color,
+.customer-account-page .site-header.is-scrolled .brand-mark__img--color {
   display: block;
 }
 
-.customer-account-page .site-header .brand-mark__img--light {
+.customer-account-page .site-header:not(.is-scrolled) .brand-mark__img--light,
+.customer-account-page .site-header.is-scrolled .brand-mark__img--light {
   display: none;
 }
 
